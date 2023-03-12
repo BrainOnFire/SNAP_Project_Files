@@ -1,0 +1,6 @@
+sht31.c:21:16:calculate_crc	4
+sht31.c:37:13:sht3x_send_command	2
+sht31.c:50:17:uint8_to_uint16	1
+sht31.c:56:6:sht3x_init	3
+sht31.c:75:6:sht3x_read_temperature_and_humidity	4
+sht31.c:101:6:sht3x_set_heater_enable	2
