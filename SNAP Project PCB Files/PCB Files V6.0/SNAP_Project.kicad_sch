@@ -2208,7 +2208,6 @@
     )
   )
 
-
   (junction (at 52.07 86.995) (diameter 0) (color 0 0 0 0)
     (uuid 00ffc224-c1a4-4dde-b32b-00fa6fc8461a)
   )
@@ -5227,9 +5226,6 @@
     (path "/9ffd6372-1837-40ec-944c-9e839fb461df/8ff85117-fff8-41a7-9cf2-c885e53052b9"
       (reference "#PWR0117") (unit 1) (value "GND") (footprint "")
     )
-    (path "/9ffd6372-1837-40ec-944c-9e839fb461df/487af8a0-5496-4a08-a355-98e2cd265414"
-      (reference "#PWR0118") (unit 1) (value "+3V0") (footprint "")
-    )
     (path "/9ffd6372-1837-40ec-944c-9e839fb461df/49bba01c-3e82-4b42-914d-bd7a3920ffbf"
       (reference "AE1") (unit 1) (value "PCB Meander Antenna") (footprint "RF_Antenna:PCB Meander Antenna")
     )
@@ -5490,9 +5486,6 @@
     )
     (path "/9ffd6372-1837-40ec-944c-9e839fb461df/6410640d-c8b1-4c5d-be78-f6a1d42a8977"
       (reference "R28") (unit 1) (value "1k") (footprint "Resistor_SMD:R_0805_2012Metric")
-    )
-    (path "/9ffd6372-1837-40ec-944c-9e839fb461df/8f1094ac-8439-4f2a-b1db-d1b404a9ad3d"
-      (reference "R29") (unit 1) (value "10k") (footprint "Resistor_SMD:R_0805_2012Metric")
     )
     (path "/4b0c2bdb-f2dd-4deb-93a5-cc514b65b331"
       (reference "SW1") (unit 1) (value "OS102011MA1QN1") (footprint "SamacSys_Parts:OS102011MA1QN1")
