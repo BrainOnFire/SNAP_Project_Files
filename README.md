@@ -1,4 +1,5 @@
-# S.N.A.P. Versión 6.0
+# S.N.A.P. Version 6.0
 
-En el presente folder se muestra tanto los archivos del código que se usó para programar el microcontrolador STM32L435 y los archivos de la placa electrónica.
- 
+Soil Nutrient Analisys Prototype or S.N.A.P. for short, is a agricultural device that allows farmers know the best type of nutrient present in a soil sample. The most common types of nutrients found in the ground are Nitrogen, Phosphorus and Potasium, which can be observed by a photosensing sensor if an IR beam hits the sample. Having this information in less than 10 minutes, the farmer has a better understanding of which crop to plant in the selected soil, saving a lot of time and money in the process. The device has come a long way, as the iteration presented in this project is the sixth one. Here is a summary of the most relevant features this iteration has over the others.
+
+SNAP 6.0 is a BLE, Low-Power, feature rich sensing device. 
