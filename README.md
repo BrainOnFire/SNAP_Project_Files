@@ -2,9 +2,8 @@
 
 <img src="SNAP Project PCB Files/PCB Files V6.0/Images/PCB Front 2.jpg" width="300px"></a>
 
-Soil Nutrient Analisys Prototype or S.N.A.P. for short, is a agricultural device that allows farmers know the best type of nutrient present in a soil sample. The most common types of nutrients found in the ground are Nitrogen, Phosphorus and Potasium, which can be observed by a photosensing sensor if an IR beam hits the sample. Having this information in less than 10 minutes, the farmer has a better understanding of which crop to plant in the selected soil, saving a lot of time and money in the process. The device has come a long way, as the iteration presented in this project is the sixth one. Here is a summary of the most relevant features this iteration has over the others.
+Soil Nutrient Analisys Prototype or S.N.A.P. for short, is a agricultural device that allows farmers know the best type of nutrient present in a soil sample. The most common types of nutrients found in the ground are Nitrogen, Phosphorus and Potasium, which can be observed by a photosensing sensor if an IR beam hits the sample. Having this information in less than 10 minutes, the farmer has a better understanding of which crop to plant in the selected soil, saving a lot of time and money in the process. The device has come a long way, as the iteration presented in this project is the sixth one. SNAP 6.0 is a BLE, Low-Power, feature rich sensing device. Here are some specs of the device:
 
-SNAP 6.0 is a BLE, Low-Power, feature rich sensing device. Here are some specs of the device:
 - STM32WB35CCU7A as main MCU (Ultra-low-power dual core ARM Coretx-M4 with FPU, BLuetooth 5.2, 256KB Flash, 32MHz)
 - Integrated Lithium-Ion battery charging with MCP73831 (Charge current 500mA, 4.2V Regulation, Reverse Discharge Protection)
 - Battery protection using AP9101C (overcharge voltage, overdischarge voltage, overcharge current, overdischarge current)
