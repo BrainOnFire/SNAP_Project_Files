@@ -29,7 +29,7 @@ A filter PI and RF Band Pass filter are used for the 2.4GHz PCB BLE antenna. The
 
 This PCB was manufactured by JLCPCB using the controlled impedance stackup JLC04161H-7628 for a dielectric constant of 4.6 . This provides a matching impedance of 50 ohm for the traces of the embedded antenna that mitigate potential power losses due to parasitic capacitances. The SMD components were soldered using a SMD reflow process with a heat gun.
 
-<img src="SNAP Project PCB Files/PCB Files V6.0/Images/PCB Design.jpg" width="320px"></a>
+<img src="SNAP Project PCB Files/PCB Files V6.0/Images/PCB Design.jpg" width="310px"></a>
 <img src="SNAP Project PCB Files/PCB Files V6.0/Images/3D PCB Front.jpg" width="300px"></a>
 
 ## Firmware and hardware integration
