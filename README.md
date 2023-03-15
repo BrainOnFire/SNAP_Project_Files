@@ -1,5 +1,7 @@
 # S.N.A.P. Version 6.0
 
+**This is a work in progress**
+
 <img src="SNAP Project PCB Files/PCB Files V6.0/Images/PCB Front 2.jpg" width="300px"></a>
 
 Soil Nutrient Analisys Prototype or S.N.A.P. for short, is a agricultural device that allows farmers know the best type of nutrient present in a soil sample. The most common types of nutrients found in the ground are Nitrogen, Phosphorus and Potasium, which can be observed by a photosensing sensor if an IR beam hits the sample. Having this information in less than 10 minutes, the farmer has a better understanding of which crop to plant in the selected soil, saving a lot of time and money in the process. The device has come a long way, as the iteration presented in this project is the sixth one. SNAP 6.0 is a BLE, Low-Power, feature rich sensing device. Here are some specs of the device:
@@ -25,7 +27,7 @@ A filter PI and RF Band Pass filter are used for the 2.4GHz PCB BLE antenna. The
 <img src="SNAP Project PCB Files/PCB Files V6.0/Images/Page 1 KiCAD Schematic.jpg" width="300px"></a>
 <img src="SNAP Project PCB Files/PCB Files V6.0/Images/Page 2 KiCAD Schematic.jpg" width="300px"></a>
 
-The PCB antenna was done using 
+This PCB was manufactured by JLCPCB using the controlled impedance stackup JLC04161H-7628 for a dielectric constant of 4.6 . This provides a matching impedance of 50 ohm for the traces of the embedded antenna that mitigate potential power losses due to parasitic capacitances. The SMD components were soldered using a SMD reflow process with a heat gun.
 
 <img src="SNAP Project PCB Files/PCB Files V6.0/Images/PCB Design.jpg" width="300px"></a>
 <img src="SNAP Project PCB Files/PCB Files V6.0/Images/3D PCB Front.jpg" width="300px"></a>
