@@ -4546,7 +4546,7 @@
   (symbol (lib_id "power:+3V0") (at 80.01 130.81 0) (unit 1)
     (in_bom yes) (on_board yes) (fields_autoplaced)
     (uuid ac7ac7f0-8b47-44cf-bac3-60de41768ade)
-    (property "Reference" "#PWR?" (id 0) (at 80.01 134.62 0)
+    (property "Reference" "#PWR011" (id 0) (at 80.01 134.62 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "+3V0" (id 1) (at 80.01 127.2055 0))
@@ -4817,7 +4817,7 @@
   (symbol (lib_id "power:+3V0") (at 107.315 114.3 0) (unit 1)
     (in_bom yes) (on_board yes) (fields_autoplaced)
     (uuid d3dff639-3b34-4076-a99f-e0dddcf90540)
-    (property "Reference" "#PWR?" (id 0) (at 107.315 118.11 0)
+    (property "Reference" "#PWR015" (id 0) (at 107.315 118.11 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "+3V0" (id 1) (at 107.315 110.6955 0))
@@ -5050,6 +5050,9 @@
     (path "/a17fc519-f427-4daa-ac70-aab122333ef1"
       (reference "#PWR010") (unit 1) (value "GND") (footprint "")
     )
+    (path "/ac7ac7f0-8b47-44cf-bac3-60de41768ade"
+      (reference "#PWR011") (unit 1) (value "+3V0") (footprint "")
+    )
     (path "/c2cf3bcd-ef00-4445-a243-c799f68d4e04"
       (reference "#PWR012") (unit 1) (value "+5V") (footprint "")
     )
@@ -5058,6 +5061,9 @@
     )
     (path "/b50c2a25-004b-4dd0-a2db-157b6b915014"
       (reference "#PWR014") (unit 1) (value "GND") (footprint "")
+    )
+    (path "/d3dff639-3b34-4076-a99f-e0dddcf90540"
+      (reference "#PWR015") (unit 1) (value "+3V0") (footprint "")
     )
     (path "/900e80f3-48a3-4549-ad6a-555a53fe6e3b"
       (reference "#PWR016") (unit 1) (value "GND") (footprint "")
@@ -5223,12 +5229,6 @@
     )
     (path "/9ffd6372-1837-40ec-944c-9e839fb461df/8ff85117-fff8-41a7-9cf2-c885e53052b9"
       (reference "#PWR0117") (unit 1) (value "GND") (footprint "")
-    )
-    (path "/ac7ac7f0-8b47-44cf-bac3-60de41768ade"
-      (reference "#PWR?") (unit 1) (value "+3V0") (footprint "")
-    )
-    (path "/d3dff639-3b34-4076-a99f-e0dddcf90540"
-      (reference "#PWR?") (unit 1) (value "+3V0") (footprint "")
     )
     (path "/9ffd6372-1837-40ec-944c-9e839fb461df/49bba01c-3e82-4b42-914d-bd7a3920ffbf"
       (reference "AE1") (unit 1) (value "PCB Meander Antenna") (footprint "RF_Antenna:PCB Meander Antenna")
