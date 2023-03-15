@@ -1,6 +1,6 @@
 # S.N.A.P. Version 6.0
 
-**This is a work in progress**
+*This README is a work in progress*
 
 <img src="SNAP Project PCB Files/PCB Files V6.0/Images/PCB Front 2.jpg" width="300px"></a>
 
