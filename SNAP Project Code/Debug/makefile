@@ -48,34 +48,34 @@ $(wildcard ../makefile.init) \
 $(wildcard ../makefile.targets) \
 
 
-BUILD_ARTIFACT_NAME := BLE_Example
+BUILD_ARTIFACT_NAME := SNAP_Project_Code
 BUILD_ARTIFACT_EXTENSION := elf
 BUILD_ARTIFACT_PREFIX :=
 BUILD_ARTIFACT := $(BUILD_ARTIFACT_PREFIX)$(BUILD_ARTIFACT_NAME)$(if $(BUILD_ARTIFACT_EXTENSION),.$(BUILD_ARTIFACT_EXTENSION),)
 
 # Add inputs and outputs from these tool invocations to the build variables 
 EXECUTABLES += \
-BLE_Example.elf \
+SNAP_Project_Code.elf \
 
 MAP_FILES += \
-BLE_Example.map \
+SNAP_Project_Code.map \
 
 SIZE_OUTPUT += \
 default.size.stdout \
 
 OBJDUMP_LIST += \
-BLE_Example.list \
+SNAP_Project_Code.list \
 
 
 # All Target
 all: main-build
 
 # Main-build Target
-main-build: BLE_Example.elf secondary-outputs
+main-build: SNAP_Project_Code.elf secondary-outputs
 
 # Tool invocations
-BLE_Example.elf BLE_Example.map: $(OBJS) $(USER_OBJS) C:\Users\lucia\STM32CubeIDE\workspace_1.9.0\BLE_Example\STM32WB35CCUXA_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-gcc -o "BLE_Example.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"C:\Users\lucia\STM32CubeIDE\workspace_1.9.0\BLE_Example\STM32WB35CCUXA_FLASH.ld" --specs=nosys.specs -Wl,-Map="BLE_Example.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+SNAP_Project_Code.elf SNAP_Project_Code.map: $(OBJS) $(USER_OBJS) C:\Users\lucia\Documents\SNAP_Project_Files\SNAP\ Project\ Code\STM32WB35CCUXA_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-gcc -o "SNAP_Project_Code.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"C:\Users\lucia\Documents\SNAP_Project_Files\SNAP Project Code\STM32WB35CCUXA_FLASH.ld" --specs=nosys.specs -Wl,-Map="SNAP_Project_Code.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 
@@ -84,14 +84,14 @@ default.size.stdout: $(EXECUTABLES) makefile objects.list $(OPTIONAL_TOOL_DEPS)
 	@echo 'Finished building: $@'
 	@echo ' '
 
-BLE_Example.list: $(EXECUTABLES) makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-objdump -h -S $(EXECUTABLES) > "BLE_Example.list"
+SNAP_Project_Code.list: $(EXECUTABLES) makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-objdump -h -S $(EXECUTABLES) > "SNAP_Project_Code.list"
 	@echo 'Finished building: $@'
 	@echo ' '
 
 # Other Targets
 clean:
-	-$(RM) BLE_Example.elf BLE_Example.list BLE_Example.map default.size.stdout
+	-$(RM) SNAP_Project_Code.elf SNAP_Project_Code.list SNAP_Project_Code.map default.size.stdout
 	-@echo ' '
 
 secondary-outputs: $(SIZE_OUTPUT) $(OBJDUMP_LIST)

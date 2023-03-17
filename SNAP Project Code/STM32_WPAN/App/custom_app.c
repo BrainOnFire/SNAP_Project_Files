@@ -98,18 +98,18 @@ float val_lineal = 0.0;
 float val_log = 0.0;
 char buf[10];
 
-char *options_menu[3] = {
-		"Elegir opcion",
+char *options_menu[2] = {
+		//"Elegir opcion",
 		"Medir quimico",
 		"Medir temperatura y humedad"
 		//"Activar Bluetooth"
 };
 
-char *options_elements[5] = {
-		"Elegir opcion",
-		"Nitrogeno",
+char *options_elements[4] = {
+		//"Elegir opcion",
 		"Fosforo",
 		"Potasio",
+		"Nitrogeno",
 		"Retornar a menu"
 };
 
@@ -123,15 +123,11 @@ sht3x_handle_t sht3x_handle = {
 /* SNAP_SVC */
 
 /* USER CODE BEGIN PFP */
-//void BLE_Function(void);
-//void ADC_BATT_CH6(void);
-//void ADC_OPAMP_CH12(void);
 void TempHum_Function(void);
 void ADCCheck_Function(void);
 void WaitUser_Function(void);
 void Battery_Percentage(void);
 void DisplayMenu_Function(void);
-//void RealSample_Function(void);
 void ChemicalError_Function(void);
 void Amplification_Function(void);
 void Sample_Function(char* str, uint8_t sample_type);
@@ -178,14 +174,6 @@ void task_main(void)
 		SSD1306_Clear();
 		UTIL_SEQ_SetTask(1 << CFG_TASK_READ_TEMP_HUM, CFG_SCH_PRIO_0);
 	}
-
-	/*
-	else if(menu_counter == 3)
-	{
-		//Advertising ON
-		ADV_Start();
-	}
-	*/
 }
 /* USER CODE END PFP */
 
@@ -279,7 +267,7 @@ void Custom_APP_Init(void)
 {
   /* USER CODE BEGIN CUSTOM_APP_Init */
 	  //Advertising OFF
-	  ADV_Stop();
+	  //ADV_Stop();
 
 	  //Check if battery has sufficient charge
 	  Battery_Percentage();
@@ -303,14 +291,15 @@ void DisplayMenu_Function(void)
 	//Se presiona boton 1
 	if((HAL_GPIO_ReadPin(BUTT_2_GPIO_Port, BUTT_2_Pin) == GPIO_PIN_RESET))
 	{
-		SSD1306_Clear();
-		if (selected_main >= 2)
+		//SSD1306_Clear();
+		if (selected_main >= 1)
 		{
+			SSD1306_Clear();
 			selected_main = 0;
 		}
 		else
 		{
-			//HAL_Delay(100);
+			HAL_Delay(500);
 			selected_main++;
 		}
 	}
@@ -318,7 +307,8 @@ void DisplayMenu_Function(void)
 	//Se presiona boton 2
 	if((HAL_GPIO_ReadPin(BUTT_1_GPIO_Port, BUTT_1_Pin) == GPIO_PIN_RESET))
 	{
-		entered_main = selected_main;
+		HAL_Delay(500);
+		entered_main = selected_main + 1;
 	}
 
 	//No se presiona ningun boton y solo se muestra el menu inicial
@@ -327,7 +317,7 @@ void DisplayMenu_Function(void)
 		SSD1306_GotoXY(1, 0);
 		SSD1306_Puts("SNAP Menu", &Font_7x10, 1);
 		SSD1306_UpdateScreen();
-		for (uint8_t i = 0; i <= 2; i++)
+		for (uint8_t i = 0; i <= 1; i++)
 		{
 			if (i == selected_main)
 			{
@@ -358,14 +348,15 @@ void Amplification_Function(void)
 	//Se presiona boton 1
 	if((HAL_GPIO_ReadPin(BUTT_2_GPIO_Port, BUTT_2_Pin) == GPIO_PIN_RESET))
 	{
-		SSD1306_Clear();
-		if (selected_second >= 4)
+		//SSD1306_Clear();
+		if (selected_second >= 3)
 		{
+			SSD1306_Clear();
 			selected_second = 0;
 		}
 		else
 		{
-			//HAL_Delay(100);
+			HAL_Delay(500);
 			selected_second++;
 		}
 	}
@@ -373,7 +364,8 @@ void Amplification_Function(void)
 	//Se presiona boton 2
 	if((HAL_GPIO_ReadPin(BUTT_1_GPIO_Port, BUTT_1_Pin) == GPIO_PIN_RESET))
 	{
-		entered_second = selected_second;
+		HAL_Delay(500);
+		entered_second = selected_second + 1;
 	}
 
 	if (entered_second == 0)
@@ -381,7 +373,7 @@ void Amplification_Function(void)
 		SSD1306_GotoXY (1, 0);
 		SSD1306_Puts("Elegir quimico", &Font_7x10, 1);
 		SSD1306_UpdateScreen();
-		for (uint8_t i = 0; i <= 4; i++)
+		for (uint8_t i = 0; i <= 3; i++)
 		{
 			if (i == selected_second)
 			{
@@ -392,16 +384,16 @@ void Amplification_Function(void)
 		}
 	}
 
-	//Nitrogen
+	//Phosphorus
 	if (entered_second == 1)
 	{
-		MeasureChemical_Function(GPIOB, LED_4261_EN_Pin);
+		MeasureChemical_Function(GPIOA, LED_WP7_EN_Pin);
 	}
 
-	//Phosphorus
+	//Nitrogen
 	else if (entered_second == 2)
 	{
-		MeasureChemical_Function(GPIOA, LED_WP7_EN_Pin);
+		MeasureChemical_Function(GPIOB, LED_4261_EN_Pin);
 	}
 
 	//Potasium
@@ -429,12 +421,12 @@ void TempHum_Function(void)
 {
 	if(HAL_GPIO_ReadPin(BUTT_1_GPIO_Port, BUTT_1_Pin) == GPIO_PIN_RESET)
 	{
-
 		entered_main = 0;
 		selected_main = 0;
 		UTIL_SEQ_SetTask(1 << CFG_TASK_MAIN, CFG_SCH_PRIO_0);
 		menu_counter = 0;
 		SSD1306_Clear();
+		HAL_Delay(1000);
 
 	}
 
@@ -469,11 +461,6 @@ void TempHum_Function(void)
 	}
 }
 
-//void BLE_Function(void)
-//{
-	//activador_ble = 1;
-//}
-
 void MeasureChemical_Function(GPIO_TypeDef *GPIO_Port, uint16_t GPIO_Pin)
 {
 	//Wait for user input
@@ -489,15 +476,16 @@ void MeasureChemical_Function(GPIO_TypeDef *GPIO_Port, uint16_t GPIO_Pin)
 	if(adc_value[0] > 500)
 	{
 		//Funcion que pide al usuario colocar la prueba blanca en la ranura
-		//BlankSample_Function();
 		Sample_Function("Blanca", 1);
 
 		//Funcion que pide al usuario colocar la prueba real en la ranura
-		//RealSample_Function();
 		Sample_Function("Real", 2);
 
 		//Turn off selected LED & reset variables for returning to Menu
 		HAL_GPIO_WritePin(GPIO_Port, GPIO_Pin, GPIO_PIN_RESET);
+		entered_main = 0;
+		selected_main = 0;
+		selected_second = 0;
 		entered_second = 0;
 		menu_counter = 0;
 
@@ -513,6 +501,10 @@ void MeasureChemical_Function(GPIO_TypeDef *GPIO_Port, uint16_t GPIO_Pin)
 
 		//Error al escoger led
 		ChemicalError_Function();
+		entered_main = 0;
+		selected_main = 0;
+		selected_second = 0;
+		entered_second = 0;
 		UTIL_SEQ_SetTask(1 << CFG_TASK_MAIN, CFG_SCH_PRIO_0);
 		return;
 	}
@@ -583,12 +575,8 @@ void Sample_Function(char* str, uint8_t sample_type)
 	TIM2->CCR1 = 34492;
 
 	//Start ADC and get ADC value
-	//ADC_OPAMP_CH12();
 	HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_1);
 	HAL_ADC_Start_DMA(&hadc1, adc_value, 2);
-	//HAL_ADC_Start(&hadc1);
-	//HAL_ADC_PollForConversion(&hadc1, 1);
-	//adc_pht = HAL_ADC_GetValue(&hadc1);
 
 	//Find ideal PWM value
 	while (adc_value[0] > 2200 || adc_value[0] < 2100)
@@ -613,11 +601,6 @@ void Sample_Function(char* str, uint8_t sample_type)
 				done_1 = 1;
 			}
 		}
-		//for(uint8_t i = 0; i < 34674; i++){
-
-		//HAL_ADC_Start(&hadc1);
-		//HAL_ADC_PollForConversion(&hadc1, 1);
-		//adc_pht = HAL_ADC_GetValue(&hadc1);
 
 		if(done_1 == 1)
 		{
@@ -629,7 +612,6 @@ void Sample_Function(char* str, uint8_t sample_type)
 	val_lineal = 2.99*adc_value[0]/4095;
 
 	//Turn off ADC and PWM
-	//HAL_ADC_Stop(&hadc1);
 	HAL_ADC_Stop_DMA(&hadc1);
 	HAL_TIM_PWM_Stop(&htim2, TIM_CHANNEL_1);
 
@@ -649,103 +631,15 @@ void Sample_Function(char* str, uint8_t sample_type)
 	return;
 }
 
-/*
-void RealSample_Function(void)
-
-{
-	SSD1306_Clear();
-	HAL_Delay(500);
-	while(HAL_GPIO_ReadPin(GPIOB, BUTT_1_Pin) == GPIO_PIN_SET)
-	{
-		SSD1306_GotoXY(15, 5);
-		SSD1306_Puts("Colocar muestra", &Font_7x10, 1);
-		SSD1306_GotoXY(15, 15);
-		SSD1306_Puts("real", &Font_7x10, 1);
-		SSD1306_GotoXY(15, 25);
-		SSD1306_Puts("Presionar 2", &Font_7x10, 1);
-		SSD1306_GotoXY(15, 35);
-		SSD1306_Puts("Para continuar", &Font_7x10, 1);
-		SSD1306_UpdateScreen();
-	}
-
-	//PWM voltage to 1.5V
-	TIM2->CCR1 = 34492;
-
-	//Start ADC and get ADC value
-	ADC_OPAMP_CH12();
-	HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_1);
-	HAL_ADC_Start(&hadc1);
-	HAL_ADC_PollForConversion(&hadc1, 1);
-	adc_pht = HAL_ADC_GetValue(&hadc1);
-
-	//Find ideal PWM value
-	while (adc_pht > 2200 || adc_pht < 2100)
-	{
-		if (adc_pht <= 2101)
-		{
-			//PWM++
-			TIM2->CCR1 += 100;
-			HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_1);
-			if(TIM2->CCR1 > 65565)
-			{
-				done_2 = 1;
-			}
-		}
-		else if(adc_pht >= 2199)
-		{
-			//PWM--
-			TIM2->CCR1 -= 100;
-			HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_1);
-			if(TIM2->CCR1 < 200)
-			{
-				done_2 = 1;
-			}
-
-		}
-
-		HAL_ADC_Start(&hadc1);
-		HAL_ADC_PollForConversion(&hadc1, 1);
-		adc_pht = HAL_ADC_GetValue(&hadc1);
-
-		if(done_2 == 1)
-		{
-			break;
-		}
-	}
-
-	//Voltage calculation
-	val_log = 2.99*(adc_pht/4095);
-
-	//Logaritmic formula
-	//TODO Calculo de la funcion log
-
-	//Turn off ADC and PWM
-	HAL_ADC_Stop(&hadc1);
-	HAL_TIM_PWM_Stop(&htim2, TIM_CHANNEL_1);
-
-	entered_second = 0;
-	menu_counter = 0;
-
-	return;
-}
-*/
-
 void ADCCheck_Function(void)
 {
-	//Change ADC channel
-	//ADC_OPAMP_CH12();
-
 	//Start PWM, PHT & OPAMP
 	TIM2->CCR1 = 65535;
 	HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_1);
 	HAL_Delay(100);
 	HAL_ADC_Start_DMA(&hadc1, adc_value, 2);
-	//HAL_ADC_Start(&hadc1);
-	//HAL_ADC_PollForConversion(&hadc1, 1000);
-	//adc_pht = HAL_ADC_GetValue(&hadc1);
 
 	//Turn off PWM and ADC
-	//HAL_ADC_Stop(&hadc1);
 	HAL_ADC_Stop_DMA(&hadc1);
 	HAL_TIM_PWM_Stop(&htim2, TIM_CHANNEL_1);
 }
@@ -753,11 +647,6 @@ void ADCCheck_Function(void)
 void Battery_Percentage(void)
 {
 	//Obtain battery value by ADC
-	//ADC_BATT_CH6();
-	//HAL_ADC_Start(&hadc1);
-	//HAL_ADC_PollForConversion(&hadc1, 1000);
-	//adc_batt = HAL_ADC_GetValue(&hadc1);
-	//HAL_ADC_Stop(&hadc1);
 	HAL_ADC_Start_DMA(&hadc1, adc_value, 2);
 	HAL_Delay(100);
 
@@ -765,7 +654,6 @@ void Battery_Percentage(void)
 	batt_percentage = 2.99*adc_value[1]/4095;
 
 	//Show value on screen
-
 	if(batt_percentage <= 1.64)
 	{
 		SSD1306_Clear();
@@ -782,36 +670,6 @@ void Battery_Percentage(void)
 
 	return;
 }
-/*
-void ADC_OPAMP_CH12(void)
-{
-	ADC_ChannelConfTypeDef sConfig = {0};
-
-	sConfig.Channel = ADC_CHANNEL_12;
-	sConfig.Rank = ADC_REGULAR_RANK_1;
-	sConfig.SamplingTime = ADC_SAMPLETIME_2CYCLES_5;
-
-	if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
-	{
-	Error_Handler();
-	}
-}
-
-void ADC_BATT_CH6(void)
-{
-	ADC_ChannelConfTypeDef sConfig = {0};
-
-	sConfig.Channel = ADC_CHANNEL_6;
-	sConfig.Rank = ADC_REGULAR_RANK_1;
-	sConfig.SamplingTime = ADC_SAMPLETIME_24CYCLES_5;
-
-	if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
-	{
-	Error_Handler();
-	}
-}
-
-*/
 
 /* USER CODE END FD */
 
