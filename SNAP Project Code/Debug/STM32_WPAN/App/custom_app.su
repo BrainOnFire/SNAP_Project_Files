@@ -9,5 +9,5 @@
 ../STM32_WPAN/App/custom_app.c:515:6:WaitUser_Function	8	static
 ../STM32_WPAN/App/custom_app.c:532:6:ChemicalError_Function	8	static
 ../STM32_WPAN/App/custom_app.c:546:6:Sample_Function	16	static
-../STM32_WPAN/App/custom_app.c:634:6:ADCCheck_Function	8	static
-../STM32_WPAN/App/custom_app.c:647:6:Battery_Percentage	8	static
+../STM32_WPAN/App/custom_app.c:635:6:ADCCheck_Function	8	static
+../STM32_WPAN/App/custom_app.c:648:6:Battery_Percentage	8	static

@@ -44899,29 +44899,29 @@ void Amplification_Function(void)
  801187a:	e025      	b.n	80118c8 <Amplification_Function+0x118>
 	}
 
-	//Nitrogen
+	//Potasium
 	else if (entered_second == 2)
  801187c:	4b19      	ldr	r3, [pc, #100]	; (80118e4 <Amplification_Function+0x134>)
  801187e:	781b      	ldrb	r3, [r3, #0]
  8011880:	2b02      	cmp	r3, #2
  8011882:	d104      	bne.n	801188e <Amplification_Function+0xde>
 	{
-		MeasureChemical_Function(GPIOB, LED_4261_EN_Pin);
- 8011884:	2120      	movs	r1, #32
+		MeasureChemical_Function(GPIOB, LED_4273_EN_Pin);
+ 8011884:	2110      	movs	r1, #16
  8011886:	4816      	ldr	r0, [pc, #88]	; (80118e0 <Amplification_Function+0x130>)
  8011888:	f000 f8ea 	bl	8011a60 <MeasureChemical_Function>
  801188c:	e01c      	b.n	80118c8 <Amplification_Function+0x118>
 	}
 
-	//Potasium
+	//Nitrogen
 	else if (entered_second == 3)
  801188e:	4b15      	ldr	r3, [pc, #84]	; (80118e4 <Amplification_Function+0x134>)
  8011890:	781b      	ldrb	r3, [r3, #0]
  8011892:	2b03      	cmp	r3, #3
  8011894:	d104      	bne.n	80118a0 <Amplification_Function+0xf0>
 	{
-		MeasureChemical_Function(GPIOB, LED_4273_EN_Pin);
- 8011896:	2110      	movs	r1, #16
+		MeasureChemical_Function(GPIOB, LED_4261_EN_Pin);
+ 8011896:	2120      	movs	r1, #32
  8011898:	4811      	ldr	r0, [pc, #68]	; (80118e0 <Amplification_Function+0x130>)
  801189a:	f000 f8e1 	bl	8011a60 <MeasureChemical_Function>
  801189e:	e013      	b.n	80118c8 <Amplification_Function+0x118>
@@ -45157,7 +45157,7 @@ void MeasureChemical_Function(GPIO_TypeDef *GPIO_Port, uint16_t GPIO_Pin)
  8011a6a:	807b      	strh	r3, [r7, #2]
 	//Wait for user input
 	WaitUser_Function();
- 8011a6c:	f000 f85e 	bl	8011b2c <WaitUser_Function>
+ 8011a6c:	f000 f85a 	bl	8011b24 <WaitUser_Function>
 
 	//Turn on selected LED
 	HAL_GPIO_WritePin(GPIO_Port, GPIO_Pin, GPIO_PIN_SET);
@@ -45175,22 +45175,22 @@ void MeasureChemical_Function(GPIO_TypeDef *GPIO_Port, uint16_t GPIO_Pin)
  8011a82:	f000 f9bf 	bl	8011e04 <ADCCheck_Function>
 
 	if(adc_value[0] > 500)
- 8011a86:	4b21      	ldr	r3, [pc, #132]	; (8011b0c <MeasureChemical_Function+0xac>)
+ 8011a86:	4b20      	ldr	r3, [pc, #128]	; (8011b08 <MeasureChemical_Function+0xa8>)
  8011a88:	681b      	ldr	r3, [r3, #0]
  8011a8a:	f5b3 7ffa 	cmp.w	r3, #500	; 0x1f4
- 8011a8e:	d921      	bls.n	8011ad4 <MeasureChemical_Function+0x74>
+ 8011a8e:	d91e      	bls.n	8011ace <MeasureChemical_Function+0x6e>
 	{
 		//Funcion que pide al usuario colocar la prueba blanca en la ranura
 		Sample_Function("Blanca", 1);
  8011a90:	2101      	movs	r1, #1
- 8011a92:	481f      	ldr	r0, [pc, #124]	; (8011b10 <MeasureChemical_Function+0xb0>)
- 8011a94:	f000 f8bc 	bl	8011c10 <Sample_Function>
+ 8011a92:	481e      	ldr	r0, [pc, #120]	; (8011b0c <MeasureChemical_Function+0xac>)
+ 8011a94:	f000 f8b8 	bl	8011c08 <Sample_Function>
 
 		//Funcion que pide al usuario colocar la prueba real en la ranura
 		Sample_Function("Real", 2);
  8011a98:	2102      	movs	r1, #2
- 8011a9a:	481e      	ldr	r0, [pc, #120]	; (8011b14 <MeasureChemical_Function+0xb4>)
- 8011a9c:	f000 f8b8 	bl	8011c10 <Sample_Function>
+ 8011a9a:	481d      	ldr	r0, [pc, #116]	; (8011b10 <MeasureChemical_Function+0xb0>)
+ 8011a9c:	f000 f8b4 	bl	8011c08 <Sample_Function>
 
 		//Turn off selected LED & reset variables for returning to Menu
 		HAL_GPIO_WritePin(GPIO_Port, GPIO_Pin, GPIO_PIN_RESET);
@@ -45200,465 +45200,466 @@ void MeasureChemical_Function(GPIO_TypeDef *GPIO_Port, uint16_t GPIO_Pin)
  8011aa6:	6878      	ldr	r0, [r7, #4]
  8011aa8:	f7f3 f95c 	bl	8004d64 <HAL_GPIO_WritePin>
 		entered_main = 0;
- 8011aac:	4b1a      	ldr	r3, [pc, #104]	; (8011b18 <MeasureChemical_Function+0xb8>)
+ 8011aac:	4b19      	ldr	r3, [pc, #100]	; (8011b14 <MeasureChemical_Function+0xb4>)
  8011aae:	2200      	movs	r2, #0
  8011ab0:	701a      	strb	r2, [r3, #0]
 		selected_main = 0;
- 8011ab2:	4b1a      	ldr	r3, [pc, #104]	; (8011b1c <MeasureChemical_Function+0xbc>)
+ 8011ab2:	4b19      	ldr	r3, [pc, #100]	; (8011b18 <MeasureChemical_Function+0xb8>)
  8011ab4:	2200      	movs	r2, #0
  8011ab6:	701a      	strb	r2, [r3, #0]
 		selected_second = 0;
- 8011ab8:	4b19      	ldr	r3, [pc, #100]	; (8011b20 <MeasureChemical_Function+0xc0>)
+ 8011ab8:	4b18      	ldr	r3, [pc, #96]	; (8011b1c <MeasureChemical_Function+0xbc>)
  8011aba:	2200      	movs	r2, #0
  8011abc:	701a      	strb	r2, [r3, #0]
 		entered_second = 0;
- 8011abe:	4b19      	ldr	r3, [pc, #100]	; (8011b24 <MeasureChemical_Function+0xc4>)
+ 8011abe:	4b18      	ldr	r3, [pc, #96]	; (8011b20 <MeasureChemical_Function+0xc0>)
  8011ac0:	2200      	movs	r2, #0
  8011ac2:	701a      	strb	r2, [r3, #0]
-		menu_counter = 0;
- 8011ac4:	4b18      	ldr	r3, [pc, #96]	; (8011b28 <MeasureChemical_Function+0xc8>)
- 8011ac6:	2200      	movs	r2, #0
- 8011ac8:	701a      	strb	r2, [r3, #0]
+		//menu_counter = 0;
 
 		//TODO:Mostrar el valor en pantalla y guardar en memoria
 		UTIL_SEQ_SetTask(1 << CFG_TASK_MAIN, CFG_SCH_PRIO_0);
- 8011aca:	2100      	movs	r1, #0
- 8011acc:	2004      	movs	r0, #4
- 8011ace:	f001 fcd7 	bl	8013480 <UTIL_SEQ_SetTask>
+ 8011ac4:	2100      	movs	r1, #0
+ 8011ac6:	2004      	movs	r0, #4
+ 8011ac8:	f001 fcda 	bl	8013480 <UTIL_SEQ_SetTask>
 		return;
- 8011ad2:	e018      	b.n	8011b06 <MeasureChemical_Function+0xa6>
+ 8011acc:	e018      	b.n	8011b00 <MeasureChemical_Function+0xa0>
 	}
 
 	else
 	{
 		//Turn off selected LED
 		HAL_GPIO_WritePin(GPIO_Port, GPIO_Pin, GPIO_PIN_RESET);
- 8011ad4:	887b      	ldrh	r3, [r7, #2]
- 8011ad6:	2200      	movs	r2, #0
- 8011ad8:	4619      	mov	r1, r3
- 8011ada:	6878      	ldr	r0, [r7, #4]
- 8011adc:	f7f3 f942 	bl	8004d64 <HAL_GPIO_WritePin>
+ 8011ace:	887b      	ldrh	r3, [r7, #2]
+ 8011ad0:	2200      	movs	r2, #0
+ 8011ad2:	4619      	mov	r1, r3
+ 8011ad4:	6878      	ldr	r0, [r7, #4]
+ 8011ad6:	f7f3 f945 	bl	8004d64 <HAL_GPIO_WritePin>
 
 		//Error al escoger led
 		ChemicalError_Function();
- 8011ae0:	f000 f86a 	bl	8011bb8 <ChemicalError_Function>
+ 8011ada:	f000 f869 	bl	8011bb0 <ChemicalError_Function>
 		entered_main = 0;
+ 8011ade:	4b0d      	ldr	r3, [pc, #52]	; (8011b14 <MeasureChemical_Function+0xb4>)
+ 8011ae0:	2200      	movs	r2, #0
+ 8011ae2:	701a      	strb	r2, [r3, #0]
+		selected_main = 0;
  8011ae4:	4b0c      	ldr	r3, [pc, #48]	; (8011b18 <MeasureChemical_Function+0xb8>)
  8011ae6:	2200      	movs	r2, #0
  8011ae8:	701a      	strb	r2, [r3, #0]
-		selected_main = 0;
+		selected_second = 0;
  8011aea:	4b0c      	ldr	r3, [pc, #48]	; (8011b1c <MeasureChemical_Function+0xbc>)
  8011aec:	2200      	movs	r2, #0
  8011aee:	701a      	strb	r2, [r3, #0]
-		selected_second = 0;
+		entered_second = 0;
  8011af0:	4b0b      	ldr	r3, [pc, #44]	; (8011b20 <MeasureChemical_Function+0xc0>)
  8011af2:	2200      	movs	r2, #0
  8011af4:	701a      	strb	r2, [r3, #0]
-		entered_second = 0;
- 8011af6:	4b0b      	ldr	r3, [pc, #44]	; (8011b24 <MeasureChemical_Function+0xc4>)
- 8011af8:	2200      	movs	r2, #0
- 8011afa:	701a      	strb	r2, [r3, #0]
 		UTIL_SEQ_SetTask(1 << CFG_TASK_MAIN, CFG_SCH_PRIO_0);
- 8011afc:	2100      	movs	r1, #0
- 8011afe:	2004      	movs	r0, #4
- 8011b00:	f001 fcbe 	bl	8013480 <UTIL_SEQ_SetTask>
+ 8011af6:	2100      	movs	r1, #0
+ 8011af8:	2004      	movs	r0, #4
+ 8011afa:	f001 fcc1 	bl	8013480 <UTIL_SEQ_SetTask>
 		return;
- 8011b04:	bf00      	nop
+ 8011afe:	bf00      	nop
 	}
 
 	return;
 }
- 8011b06:	3708      	adds	r7, #8
- 8011b08:	46bd      	mov	sp, r7
- 8011b0a:	bd80      	pop	{r7, pc}
- 8011b0c:	20000a90 	.word	0x20000a90
- 8011b10:	08016010 	.word	0x08016010
- 8011b14:	08016018 	.word	0x08016018
- 8011b18:	20000a8b 	.word	0x20000a8b
- 8011b1c:	20000a88 	.word	0x20000a88
- 8011b20:	20000a89 	.word	0x20000a89
- 8011b24:	20000a8a 	.word	0x20000a8a
- 8011b28:	20000a87 	.word	0x20000a87
+ 8011b00:	3708      	adds	r7, #8
+ 8011b02:	46bd      	mov	sp, r7
+ 8011b04:	bd80      	pop	{r7, pc}
+ 8011b06:	bf00      	nop
+ 8011b08:	20000a90 	.word	0x20000a90
+ 8011b0c:	08016010 	.word	0x08016010
+ 8011b10:	08016018 	.word	0x08016018
+ 8011b14:	20000a8b 	.word	0x20000a8b
+ 8011b18:	20000a88 	.word	0x20000a88
+ 8011b1c:	20000a89 	.word	0x20000a89
+ 8011b20:	20000a8a 	.word	0x20000a8a
 
-08011b2c <WaitUser_Function>:
+08011b24 <WaitUser_Function>:
 
 void WaitUser_Function(void)
 {
- 8011b2c:	b580      	push	{r7, lr}
- 8011b2e:	af00      	add	r7, sp, #0
+ 8011b24:	b580      	push	{r7, lr}
+ 8011b26:	af00      	add	r7, sp, #0
 	SSD1306_Clear();
- 8011b30:	f7f0 fc53 	bl	80023da <SSD1306_Clear>
+ 8011b28:	f7f0 fc57 	bl	80023da <SSD1306_Clear>
 	HAL_Delay(500);
- 8011b34:	f44f 70fa 	mov.w	r0, #500	; 0x1f4
- 8011b38:	f7ef fc5d 	bl	80013f6 <HAL_Delay>
+ 8011b2c:	f44f 70fa 	mov.w	r0, #500	; 0x1f4
+ 8011b30:	f7ef fc61 	bl	80013f6 <HAL_Delay>
 	while(HAL_GPIO_ReadPin(GPIOB, BUTT_1_Pin) == GPIO_PIN_SET){
- 8011b3c:	e025      	b.n	8011b8a <WaitUser_Function+0x5e>
+ 8011b34:	e025      	b.n	8011b82 <WaitUser_Function+0x5e>
 		SSD1306_GotoXY(15, 5);
- 8011b3e:	2105      	movs	r1, #5
- 8011b40:	200f      	movs	r0, #15
- 8011b42:	f7f0 fb8f 	bl	8002264 <SSD1306_GotoXY>
+ 8011b36:	2105      	movs	r1, #5
+ 8011b38:	200f      	movs	r0, #15
+ 8011b3a:	f7f0 fb93 	bl	8002264 <SSD1306_GotoXY>
 		SSD1306_Puts("Mover palanca", &Font_7x10, 1);
- 8011b46:	2201      	movs	r2, #1
- 8011b48:	4915      	ldr	r1, [pc, #84]	; (8011ba0 <WaitUser_Function+0x74>)
- 8011b4a:	4816      	ldr	r0, [pc, #88]	; (8011ba4 <WaitUser_Function+0x78>)
- 8011b4c:	f7f0 fc20 	bl	8002390 <SSD1306_Puts>
+ 8011b3e:	2201      	movs	r2, #1
+ 8011b40:	4915      	ldr	r1, [pc, #84]	; (8011b98 <WaitUser_Function+0x74>)
+ 8011b42:	4816      	ldr	r0, [pc, #88]	; (8011b9c <WaitUser_Function+0x78>)
+ 8011b44:	f7f0 fc24 	bl	8002390 <SSD1306_Puts>
 		SSD1306_GotoXY(15, 15);
- 8011b50:	210f      	movs	r1, #15
- 8011b52:	200f      	movs	r0, #15
- 8011b54:	f7f0 fb86 	bl	8002264 <SSD1306_GotoXY>
+ 8011b48:	210f      	movs	r1, #15
+ 8011b4a:	200f      	movs	r0, #15
+ 8011b4c:	f7f0 fb8a 	bl	8002264 <SSD1306_GotoXY>
 		SSD1306_Puts("al LED escogido", &Font_7x10, 1);
- 8011b58:	2201      	movs	r2, #1
- 8011b5a:	4911      	ldr	r1, [pc, #68]	; (8011ba0 <WaitUser_Function+0x74>)
- 8011b5c:	4812      	ldr	r0, [pc, #72]	; (8011ba8 <WaitUser_Function+0x7c>)
- 8011b5e:	f7f0 fc17 	bl	8002390 <SSD1306_Puts>
+ 8011b50:	2201      	movs	r2, #1
+ 8011b52:	4911      	ldr	r1, [pc, #68]	; (8011b98 <WaitUser_Function+0x74>)
+ 8011b54:	4812      	ldr	r0, [pc, #72]	; (8011ba0 <WaitUser_Function+0x7c>)
+ 8011b56:	f7f0 fc1b 	bl	8002390 <SSD1306_Puts>
 		SSD1306_GotoXY(15, 25);
- 8011b62:	2119      	movs	r1, #25
- 8011b64:	200f      	movs	r0, #15
- 8011b66:	f7f0 fb7d 	bl	8002264 <SSD1306_GotoXY>
+ 8011b5a:	2119      	movs	r1, #25
+ 8011b5c:	200f      	movs	r0, #15
+ 8011b5e:	f7f0 fb81 	bl	8002264 <SSD1306_GotoXY>
 		SSD1306_Puts("Presionar 2", &Font_7x10, 1);
- 8011b6a:	2201      	movs	r2, #1
- 8011b6c:	490c      	ldr	r1, [pc, #48]	; (8011ba0 <WaitUser_Function+0x74>)
- 8011b6e:	480f      	ldr	r0, [pc, #60]	; (8011bac <WaitUser_Function+0x80>)
- 8011b70:	f7f0 fc0e 	bl	8002390 <SSD1306_Puts>
+ 8011b62:	2201      	movs	r2, #1
+ 8011b64:	490c      	ldr	r1, [pc, #48]	; (8011b98 <WaitUser_Function+0x74>)
+ 8011b66:	480f      	ldr	r0, [pc, #60]	; (8011ba4 <WaitUser_Function+0x80>)
+ 8011b68:	f7f0 fc12 	bl	8002390 <SSD1306_Puts>
 		SSD1306_GotoXY(15, 35);
- 8011b74:	2123      	movs	r1, #35	; 0x23
- 8011b76:	200f      	movs	r0, #15
- 8011b78:	f7f0 fb74 	bl	8002264 <SSD1306_GotoXY>
+ 8011b6c:	2123      	movs	r1, #35	; 0x23
+ 8011b6e:	200f      	movs	r0, #15
+ 8011b70:	f7f0 fb78 	bl	8002264 <SSD1306_GotoXY>
 		SSD1306_Puts("Para continuar", &Font_7x10, 1);
- 8011b7c:	2201      	movs	r2, #1
- 8011b7e:	4908      	ldr	r1, [pc, #32]	; (8011ba0 <WaitUser_Function+0x74>)
- 8011b80:	480b      	ldr	r0, [pc, #44]	; (8011bb0 <WaitUser_Function+0x84>)
- 8011b82:	f7f0 fc05 	bl	8002390 <SSD1306_Puts>
+ 8011b74:	2201      	movs	r2, #1
+ 8011b76:	4908      	ldr	r1, [pc, #32]	; (8011b98 <WaitUser_Function+0x74>)
+ 8011b78:	480b      	ldr	r0, [pc, #44]	; (8011ba8 <WaitUser_Function+0x84>)
+ 8011b7a:	f7f0 fc09 	bl	8002390 <SSD1306_Puts>
 		SSD1306_UpdateScreen();
- 8011b86:	f7f0 fac7 	bl	8002118 <SSD1306_UpdateScreen>
+ 8011b7e:	f7f0 facb 	bl	8002118 <SSD1306_UpdateScreen>
 	while(HAL_GPIO_ReadPin(GPIOB, BUTT_1_Pin) == GPIO_PIN_SET){
- 8011b8a:	2102      	movs	r1, #2
- 8011b8c:	4809      	ldr	r0, [pc, #36]	; (8011bb4 <WaitUser_Function+0x88>)
- 8011b8e:	f7f3 f8d1 	bl	8004d34 <HAL_GPIO_ReadPin>
- 8011b92:	4603      	mov	r3, r0
- 8011b94:	2b01      	cmp	r3, #1
- 8011b96:	d0d2      	beq.n	8011b3e <WaitUser_Function+0x12>
+ 8011b82:	2102      	movs	r1, #2
+ 8011b84:	4809      	ldr	r0, [pc, #36]	; (8011bac <WaitUser_Function+0x88>)
+ 8011b86:	f7f3 f8d5 	bl	8004d34 <HAL_GPIO_ReadPin>
+ 8011b8a:	4603      	mov	r3, r0
+ 8011b8c:	2b01      	cmp	r3, #1
+ 8011b8e:	d0d2      	beq.n	8011b36 <WaitUser_Function+0x12>
 	}
 }
- 8011b98:	bf00      	nop
- 8011b9a:	bf00      	nop
- 8011b9c:	bd80      	pop	{r7, pc}
- 8011b9e:	bf00      	nop
- 8011ba0:	20000004 	.word	0x20000004
- 8011ba4:	08016020 	.word	0x08016020
- 8011ba8:	08016030 	.word	0x08016030
- 8011bac:	08016040 	.word	0x08016040
- 8011bb0:	0801604c 	.word	0x0801604c
- 8011bb4:	48000400 	.word	0x48000400
+ 8011b90:	bf00      	nop
+ 8011b92:	bf00      	nop
+ 8011b94:	bd80      	pop	{r7, pc}
+ 8011b96:	bf00      	nop
+ 8011b98:	20000004 	.word	0x20000004
+ 8011b9c:	08016020 	.word	0x08016020
+ 8011ba0:	08016030 	.word	0x08016030
+ 8011ba4:	08016040 	.word	0x08016040
+ 8011ba8:	0801604c 	.word	0x0801604c
+ 8011bac:	48000400 	.word	0x48000400
 
-08011bb8 <ChemicalError_Function>:
+08011bb0 <ChemicalError_Function>:
 
 void ChemicalError_Function(void)
 {
- 8011bb8:	b580      	push	{r7, lr}
- 8011bba:	af00      	add	r7, sp, #0
+ 8011bb0:	b580      	push	{r7, lr}
+ 8011bb2:	af00      	add	r7, sp, #0
 	//Show on screen
 	SSD1306_Clear();
- 8011bbc:	f7f0 fc0d 	bl	80023da <SSD1306_Clear>
+ 8011bb4:	f7f0 fc11 	bl	80023da <SSD1306_Clear>
 	SSD1306_GotoXY(15, 15);
- 8011bc0:	210f      	movs	r1, #15
- 8011bc2:	200f      	movs	r0, #15
- 8011bc4:	f7f0 fb4e 	bl	8002264 <SSD1306_GotoXY>
+ 8011bb8:	210f      	movs	r1, #15
+ 8011bba:	200f      	movs	r0, #15
+ 8011bbc:	f7f0 fb52 	bl	8002264 <SSD1306_GotoXY>
 	SSD1306_Puts("LED Incorrecto", &Font_7x10, 1);
- 8011bc8:	2201      	movs	r2, #1
- 8011bca:	490c      	ldr	r1, [pc, #48]	; (8011bfc <ChemicalError_Function+0x44>)
- 8011bcc:	480c      	ldr	r0, [pc, #48]	; (8011c00 <ChemicalError_Function+0x48>)
- 8011bce:	f7f0 fbdf 	bl	8002390 <SSD1306_Puts>
+ 8011bc0:	2201      	movs	r2, #1
+ 8011bc2:	490c      	ldr	r1, [pc, #48]	; (8011bf4 <ChemicalError_Function+0x44>)
+ 8011bc4:	480c      	ldr	r0, [pc, #48]	; (8011bf8 <ChemicalError_Function+0x48>)
+ 8011bc6:	f7f0 fbe3 	bl	8002390 <SSD1306_Puts>
 	SSD1306_GotoXY(15, 45);
- 8011bd2:	212d      	movs	r1, #45	; 0x2d
- 8011bd4:	200f      	movs	r0, #15
- 8011bd6:	f7f0 fb45 	bl	8002264 <SSD1306_GotoXY>
+ 8011bca:	212d      	movs	r1, #45	; 0x2d
+ 8011bcc:	200f      	movs	r0, #15
+ 8011bce:	f7f0 fb49 	bl	8002264 <SSD1306_GotoXY>
 	SSD1306_Puts("Cambiar LED", &Font_7x10, 1);
- 8011bda:	2201      	movs	r2, #1
- 8011bdc:	4907      	ldr	r1, [pc, #28]	; (8011bfc <ChemicalError_Function+0x44>)
- 8011bde:	4809      	ldr	r0, [pc, #36]	; (8011c04 <ChemicalError_Function+0x4c>)
- 8011be0:	f7f0 fbd6 	bl	8002390 <SSD1306_Puts>
+ 8011bd2:	2201      	movs	r2, #1
+ 8011bd4:	4907      	ldr	r1, [pc, #28]	; (8011bf4 <ChemicalError_Function+0x44>)
+ 8011bd6:	4809      	ldr	r0, [pc, #36]	; (8011bfc <ChemicalError_Function+0x4c>)
+ 8011bd8:	f7f0 fbda 	bl	8002390 <SSD1306_Puts>
 	SSD1306_UpdateScreen();
- 8011be4:	f7f0 fa98 	bl	8002118 <SSD1306_UpdateScreen>
+ 8011bdc:	f7f0 fa9c 	bl	8002118 <SSD1306_UpdateScreen>
 
-	HAL_Delay(1000);
- 8011be8:	f44f 707a 	mov.w	r0, #1000	; 0x3e8
- 8011bec:	f7ef fc03 	bl	80013f6 <HAL_Delay>
+	HAL_Delay(3000);
+ 8011be0:	f640 30b8 	movw	r0, #3000	; 0xbb8
+ 8011be4:	f7ef fc07 	bl	80013f6 <HAL_Delay>
 	entered_second = 4;
- 8011bf0:	4b05      	ldr	r3, [pc, #20]	; (8011c08 <ChemicalError_Function+0x50>)
- 8011bf2:	2204      	movs	r2, #4
- 8011bf4:	701a      	strb	r2, [r3, #0]
+ 8011be8:	4b05      	ldr	r3, [pc, #20]	; (8011c00 <ChemicalError_Function+0x50>)
+ 8011bea:	2204      	movs	r2, #4
+ 8011bec:	701a      	strb	r2, [r3, #0]
 }
- 8011bf6:	bf00      	nop
- 8011bf8:	bd80      	pop	{r7, pc}
- 8011bfa:	bf00      	nop
- 8011bfc:	20000004 	.word	0x20000004
- 8011c00:	0801605c 	.word	0x0801605c
- 8011c04:	0801606c 	.word	0x0801606c
- 8011c08:	20000a8a 	.word	0x20000a8a
- 8011c0c:	00000000 	.word	0x00000000
+ 8011bee:	bf00      	nop
+ 8011bf0:	bd80      	pop	{r7, pc}
+ 8011bf2:	bf00      	nop
+ 8011bf4:	20000004 	.word	0x20000004
+ 8011bf8:	0801605c 	.word	0x0801605c
+ 8011bfc:	0801606c 	.word	0x0801606c
+ 8011c00:	20000a8a 	.word	0x20000a8a
+ 8011c04:	00000000 	.word	0x00000000
 
-08011c10 <Sample_Function>:
+08011c08 <Sample_Function>:
 
 void Sample_Function(char* str, uint8_t sample_type)
 {
- 8011c10:	b580      	push	{r7, lr}
- 8011c12:	b082      	sub	sp, #8
- 8011c14:	af00      	add	r7, sp, #0
- 8011c16:	6078      	str	r0, [r7, #4]
- 8011c18:	460b      	mov	r3, r1
- 8011c1a:	70fb      	strb	r3, [r7, #3]
+ 8011c08:	b580      	push	{r7, lr}
+ 8011c0a:	b082      	sub	sp, #8
+ 8011c0c:	af00      	add	r7, sp, #0
+ 8011c0e:	6078      	str	r0, [r7, #4]
+ 8011c10:	460b      	mov	r3, r1
+ 8011c12:	70fb      	strb	r3, [r7, #3]
 	SSD1306_Clear();
- 8011c1c:	f7f0 fbdd 	bl	80023da <SSD1306_Clear>
+ 8011c14:	f7f0 fbe1 	bl	80023da <SSD1306_Clear>
 	HAL_Delay(500);
- 8011c20:	f44f 70fa 	mov.w	r0, #500	; 0x1f4
- 8011c24:	f7ef fbe7 	bl	80013f6 <HAL_Delay>
+ 8011c18:	f44f 70fa 	mov.w	r0, #500	; 0x1f4
+ 8011c1c:	f7ef fbeb 	bl	80013f6 <HAL_Delay>
 
 	while(HAL_GPIO_ReadPin(GPIOB, BUTT_1_Pin) == GPIO_PIN_SET)
- 8011c28:	e032      	b.n	8011c90 <Sample_Function+0x80>
+ 8011c20:	e032      	b.n	8011c88 <Sample_Function+0x80>
 	{
 		SSD1306_GotoXY(15, 5);
- 8011c2a:	2105      	movs	r1, #5
- 8011c2c:	200f      	movs	r0, #15
- 8011c2e:	f7f0 fb19 	bl	8002264 <SSD1306_GotoXY>
+ 8011c22:	2105      	movs	r1, #5
+ 8011c24:	200f      	movs	r0, #15
+ 8011c26:	f7f0 fb1d 	bl	8002264 <SSD1306_GotoXY>
 		SSD1306_Puts("Colocar muestra", &Font_7x10, 1);
- 8011c32:	2201      	movs	r2, #1
- 8011c34:	4966      	ldr	r1, [pc, #408]	; (8011dd0 <Sample_Function+0x1c0>)
- 8011c36:	4867      	ldr	r0, [pc, #412]	; (8011dd4 <Sample_Function+0x1c4>)
- 8011c38:	f7f0 fbaa 	bl	8002390 <SSD1306_Puts>
+ 8011c2a:	2201      	movs	r2, #1
+ 8011c2c:	4968      	ldr	r1, [pc, #416]	; (8011dd0 <Sample_Function+0x1c8>)
+ 8011c2e:	4869      	ldr	r0, [pc, #420]	; (8011dd4 <Sample_Function+0x1cc>)
+ 8011c30:	f7f0 fbae 	bl	8002390 <SSD1306_Puts>
 		SSD1306_GotoXY(15, 15);
- 8011c3c:	210f      	movs	r1, #15
- 8011c3e:	200f      	movs	r0, #15
- 8011c40:	f7f0 fb10 	bl	8002264 <SSD1306_GotoXY>
+ 8011c34:	210f      	movs	r1, #15
+ 8011c36:	200f      	movs	r0, #15
+ 8011c38:	f7f0 fb14 	bl	8002264 <SSD1306_GotoXY>
 		switch(sample_type)
- 8011c44:	78fb      	ldrb	r3, [r7, #3]
- 8011c46:	2b01      	cmp	r3, #1
- 8011c48:	d002      	beq.n	8011c50 <Sample_Function+0x40>
- 8011c4a:	2b02      	cmp	r3, #2
- 8011c4c:	d006      	beq.n	8011c5c <Sample_Function+0x4c>
- 8011c4e:	e00b      	b.n	8011c68 <Sample_Function+0x58>
+ 8011c3c:	78fb      	ldrb	r3, [r7, #3]
+ 8011c3e:	2b01      	cmp	r3, #1
+ 8011c40:	d002      	beq.n	8011c48 <Sample_Function+0x40>
+ 8011c42:	2b02      	cmp	r3, #2
+ 8011c44:	d006      	beq.n	8011c54 <Sample_Function+0x4c>
+ 8011c46:	e00b      	b.n	8011c60 <Sample_Function+0x58>
 		{
 		case 1:
 			SSD1306_Puts(str, &Font_7x10, 1);
- 8011c50:	2201      	movs	r2, #1
- 8011c52:	495f      	ldr	r1, [pc, #380]	; (8011dd0 <Sample_Function+0x1c0>)
- 8011c54:	6878      	ldr	r0, [r7, #4]
- 8011c56:	f7f0 fb9b 	bl	8002390 <SSD1306_Puts>
+ 8011c48:	2201      	movs	r2, #1
+ 8011c4a:	4961      	ldr	r1, [pc, #388]	; (8011dd0 <Sample_Function+0x1c8>)
+ 8011c4c:	6878      	ldr	r0, [r7, #4]
+ 8011c4e:	f7f0 fb9f 	bl	8002390 <SSD1306_Puts>
 			break;
- 8011c5a:	e005      	b.n	8011c68 <Sample_Function+0x58>
+ 8011c52:	e005      	b.n	8011c60 <Sample_Function+0x58>
 
 		case 2:
 			SSD1306_Puts(str, &Font_7x10, 1);
- 8011c5c:	2201      	movs	r2, #1
- 8011c5e:	495c      	ldr	r1, [pc, #368]	; (8011dd0 <Sample_Function+0x1c0>)
- 8011c60:	6878      	ldr	r0, [r7, #4]
- 8011c62:	f7f0 fb95 	bl	8002390 <SSD1306_Puts>
+ 8011c54:	2201      	movs	r2, #1
+ 8011c56:	495e      	ldr	r1, [pc, #376]	; (8011dd0 <Sample_Function+0x1c8>)
+ 8011c58:	6878      	ldr	r0, [r7, #4]
+ 8011c5a:	f7f0 fb99 	bl	8002390 <SSD1306_Puts>
 			break;
- 8011c66:	bf00      	nop
+ 8011c5e:	bf00      	nop
 		}
 		//SSD1306_Puts(str, &Font_7x10, 1);
 		SSD1306_GotoXY(15, 25);
- 8011c68:	2119      	movs	r1, #25
- 8011c6a:	200f      	movs	r0, #15
- 8011c6c:	f7f0 fafa 	bl	8002264 <SSD1306_GotoXY>
+ 8011c60:	2119      	movs	r1, #25
+ 8011c62:	200f      	movs	r0, #15
+ 8011c64:	f7f0 fafe 	bl	8002264 <SSD1306_GotoXY>
 		SSD1306_Puts("Presionar 2", &Font_7x10, 1);
- 8011c70:	2201      	movs	r2, #1
- 8011c72:	4957      	ldr	r1, [pc, #348]	; (8011dd0 <Sample_Function+0x1c0>)
- 8011c74:	4858      	ldr	r0, [pc, #352]	; (8011dd8 <Sample_Function+0x1c8>)
- 8011c76:	f7f0 fb8b 	bl	8002390 <SSD1306_Puts>
+ 8011c68:	2201      	movs	r2, #1
+ 8011c6a:	4959      	ldr	r1, [pc, #356]	; (8011dd0 <Sample_Function+0x1c8>)
+ 8011c6c:	485a      	ldr	r0, [pc, #360]	; (8011dd8 <Sample_Function+0x1d0>)
+ 8011c6e:	f7f0 fb8f 	bl	8002390 <SSD1306_Puts>
 		SSD1306_GotoXY(15, 35);
- 8011c7a:	2123      	movs	r1, #35	; 0x23
- 8011c7c:	200f      	movs	r0, #15
- 8011c7e:	f7f0 faf1 	bl	8002264 <SSD1306_GotoXY>
+ 8011c72:	2123      	movs	r1, #35	; 0x23
+ 8011c74:	200f      	movs	r0, #15
+ 8011c76:	f7f0 faf5 	bl	8002264 <SSD1306_GotoXY>
 		SSD1306_Puts("Para continuar", &Font_7x10, 1);
- 8011c82:	2201      	movs	r2, #1
- 8011c84:	4952      	ldr	r1, [pc, #328]	; (8011dd0 <Sample_Function+0x1c0>)
- 8011c86:	4855      	ldr	r0, [pc, #340]	; (8011ddc <Sample_Function+0x1cc>)
- 8011c88:	f7f0 fb82 	bl	8002390 <SSD1306_Puts>
+ 8011c7a:	2201      	movs	r2, #1
+ 8011c7c:	4954      	ldr	r1, [pc, #336]	; (8011dd0 <Sample_Function+0x1c8>)
+ 8011c7e:	4857      	ldr	r0, [pc, #348]	; (8011ddc <Sample_Function+0x1d4>)
+ 8011c80:	f7f0 fb86 	bl	8002390 <SSD1306_Puts>
 		SSD1306_UpdateScreen();
- 8011c8c:	f7f0 fa44 	bl	8002118 <SSD1306_UpdateScreen>
+ 8011c84:	f7f0 fa48 	bl	8002118 <SSD1306_UpdateScreen>
 	while(HAL_GPIO_ReadPin(GPIOB, BUTT_1_Pin) == GPIO_PIN_SET)
- 8011c90:	2102      	movs	r1, #2
- 8011c92:	4853      	ldr	r0, [pc, #332]	; (8011de0 <Sample_Function+0x1d0>)
- 8011c94:	f7f3 f84e 	bl	8004d34 <HAL_GPIO_ReadPin>
- 8011c98:	4603      	mov	r3, r0
- 8011c9a:	2b01      	cmp	r3, #1
- 8011c9c:	d0c5      	beq.n	8011c2a <Sample_Function+0x1a>
+ 8011c88:	2102      	movs	r1, #2
+ 8011c8a:	4855      	ldr	r0, [pc, #340]	; (8011de0 <Sample_Function+0x1d8>)
+ 8011c8c:	f7f3 f852 	bl	8004d34 <HAL_GPIO_ReadPin>
+ 8011c90:	4603      	mov	r3, r0
+ 8011c92:	2b01      	cmp	r3, #1
+ 8011c94:	d0c5      	beq.n	8011c22 <Sample_Function+0x1a>
 	}
 
 	//PWM voltage to 1.5V
 	TIM2->CCR1 = 34492;
- 8011c9e:	f04f 4380 	mov.w	r3, #1073741824	; 0x40000000
- 8011ca2:	f248 62bc 	movw	r2, #34492	; 0x86bc
- 8011ca6:	635a      	str	r2, [r3, #52]	; 0x34
+ 8011c96:	f04f 4380 	mov.w	r3, #1073741824	; 0x40000000
+ 8011c9a:	f248 62bc 	movw	r2, #34492	; 0x86bc
+ 8011c9e:	635a      	str	r2, [r3, #52]	; 0x34
 
 	//Start ADC and get ADC value
 	HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_1);
- 8011ca8:	2100      	movs	r1, #0
- 8011caa:	484e      	ldr	r0, [pc, #312]	; (8011de4 <Sample_Function+0x1d4>)
- 8011cac:	f7f7 fe94 	bl	80099d8 <HAL_TIM_PWM_Start>
+ 8011ca0:	2100      	movs	r1, #0
+ 8011ca2:	4850      	ldr	r0, [pc, #320]	; (8011de4 <Sample_Function+0x1dc>)
+ 8011ca4:	f7f7 fe98 	bl	80099d8 <HAL_TIM_PWM_Start>
 	HAL_ADC_Start_DMA(&hadc1, adc_value, 2);
- 8011cb0:	2202      	movs	r2, #2
- 8011cb2:	494d      	ldr	r1, [pc, #308]	; (8011de8 <Sample_Function+0x1d8>)
- 8011cb4:	484d      	ldr	r0, [pc, #308]	; (8011dec <Sample_Function+0x1dc>)
- 8011cb6:	f7f1 fba5 	bl	8003404 <HAL_ADC_Start_DMA>
+ 8011ca8:	2202      	movs	r2, #2
+ 8011caa:	494f      	ldr	r1, [pc, #316]	; (8011de8 <Sample_Function+0x1e0>)
+ 8011cac:	484f      	ldr	r0, [pc, #316]	; (8011dec <Sample_Function+0x1e4>)
+ 8011cae:	f7f1 fba9 	bl	8003404 <HAL_ADC_Start_DMA>
 
 	//Find ideal PWM value
 	while (adc_value[0] > 2200 || adc_value[0] < 2100)
- 8011cba:	e037      	b.n	8011d2c <Sample_Function+0x11c>
+ 8011cb2:	e03c      	b.n	8011d2e <Sample_Function+0x126>
 	{
+		HAL_ADC_Start_DMA(&hadc1, adc_value, 2);
+ 8011cb4:	2202      	movs	r2, #2
+ 8011cb6:	494c      	ldr	r1, [pc, #304]	; (8011de8 <Sample_Function+0x1e0>)
+ 8011cb8:	484c      	ldr	r0, [pc, #304]	; (8011dec <Sample_Function+0x1e4>)
+ 8011cba:	f7f1 fba3 	bl	8003404 <HAL_ADC_Start_DMA>
 		if (adc_value[0] <= 2101)
- 8011cbc:	4b4a      	ldr	r3, [pc, #296]	; (8011de8 <Sample_Function+0x1d8>)
- 8011cbe:	681b      	ldr	r3, [r3, #0]
- 8011cc0:	f640 0235 	movw	r2, #2101	; 0x835
- 8011cc4:	4293      	cmp	r3, r2
- 8011cc6:	d814      	bhi.n	8011cf2 <Sample_Function+0xe2>
+ 8011cbe:	4b4a      	ldr	r3, [pc, #296]	; (8011de8 <Sample_Function+0x1e0>)
+ 8011cc0:	681b      	ldr	r3, [r3, #0]
+ 8011cc2:	f640 0235 	movw	r2, #2101	; 0x835
+ 8011cc6:	4293      	cmp	r3, r2
+ 8011cc8:	d814      	bhi.n	8011cf4 <Sample_Function+0xec>
 		{
 			//PWM++
 			TIM2->CCR1 += 100;
- 8011cc8:	f04f 4380 	mov.w	r3, #1073741824	; 0x40000000
- 8011ccc:	6b5b      	ldr	r3, [r3, #52]	; 0x34
- 8011cce:	f04f 4280 	mov.w	r2, #1073741824	; 0x40000000
- 8011cd2:	3364      	adds	r3, #100	; 0x64
- 8011cd4:	6353      	str	r3, [r2, #52]	; 0x34
+ 8011cca:	f04f 4380 	mov.w	r3, #1073741824	; 0x40000000
+ 8011cce:	6b5b      	ldr	r3, [r3, #52]	; 0x34
+ 8011cd0:	f04f 4280 	mov.w	r2, #1073741824	; 0x40000000
+ 8011cd4:	3364      	adds	r3, #100	; 0x64
+ 8011cd6:	6353      	str	r3, [r2, #52]	; 0x34
 			HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_1);
- 8011cd6:	2100      	movs	r1, #0
- 8011cd8:	4842      	ldr	r0, [pc, #264]	; (8011de4 <Sample_Function+0x1d4>)
- 8011cda:	f7f7 fe7d 	bl	80099d8 <HAL_TIM_PWM_Start>
+ 8011cd8:	2100      	movs	r1, #0
+ 8011cda:	4842      	ldr	r0, [pc, #264]	; (8011de4 <Sample_Function+0x1dc>)
+ 8011cdc:	f7f7 fe7c 	bl	80099d8 <HAL_TIM_PWM_Start>
 			if(TIM2->CCR1 > 65565)
- 8011cde:	f04f 4380 	mov.w	r3, #1073741824	; 0x40000000
- 8011ce2:	6b5b      	ldr	r3, [r3, #52]	; 0x34
- 8011ce4:	4a42      	ldr	r2, [pc, #264]	; (8011df0 <Sample_Function+0x1e0>)
- 8011ce6:	4293      	cmp	r3, r2
- 8011ce8:	d91c      	bls.n	8011d24 <Sample_Function+0x114>
+ 8011ce0:	f04f 4380 	mov.w	r3, #1073741824	; 0x40000000
+ 8011ce4:	6b5b      	ldr	r3, [r3, #52]	; 0x34
+ 8011ce6:	4a42      	ldr	r2, [pc, #264]	; (8011df0 <Sample_Function+0x1e8>)
+ 8011ce8:	4293      	cmp	r3, r2
+ 8011cea:	d91c      	bls.n	8011d26 <Sample_Function+0x11e>
 			{
 				done_1 = 1;
- 8011cea:	4b42      	ldr	r3, [pc, #264]	; (8011df4 <Sample_Function+0x1e4>)
- 8011cec:	2201      	movs	r2, #1
- 8011cee:	701a      	strb	r2, [r3, #0]
- 8011cf0:	e018      	b.n	8011d24 <Sample_Function+0x114>
+ 8011cec:	4b41      	ldr	r3, [pc, #260]	; (8011df4 <Sample_Function+0x1ec>)
+ 8011cee:	2201      	movs	r2, #1
+ 8011cf0:	701a      	strb	r2, [r3, #0]
+ 8011cf2:	e018      	b.n	8011d26 <Sample_Function+0x11e>
 			}
 		}
 		else if(adc_value[0] >= 2199)
- 8011cf2:	4b3d      	ldr	r3, [pc, #244]	; (8011de8 <Sample_Function+0x1d8>)
- 8011cf4:	681b      	ldr	r3, [r3, #0]
- 8011cf6:	f640 0296 	movw	r2, #2198	; 0x896
- 8011cfa:	4293      	cmp	r3, r2
- 8011cfc:	d912      	bls.n	8011d24 <Sample_Function+0x114>
+ 8011cf4:	4b3c      	ldr	r3, [pc, #240]	; (8011de8 <Sample_Function+0x1e0>)
+ 8011cf6:	681b      	ldr	r3, [r3, #0]
+ 8011cf8:	f640 0296 	movw	r2, #2198	; 0x896
+ 8011cfc:	4293      	cmp	r3, r2
+ 8011cfe:	d912      	bls.n	8011d26 <Sample_Function+0x11e>
 		{
 			//PWM--
 			TIM2->CCR1 -= 100;
- 8011cfe:	f04f 4380 	mov.w	r3, #1073741824	; 0x40000000
- 8011d02:	6b5b      	ldr	r3, [r3, #52]	; 0x34
- 8011d04:	f04f 4280 	mov.w	r2, #1073741824	; 0x40000000
- 8011d08:	3b64      	subs	r3, #100	; 0x64
- 8011d0a:	6353      	str	r3, [r2, #52]	; 0x34
+ 8011d00:	f04f 4380 	mov.w	r3, #1073741824	; 0x40000000
+ 8011d04:	6b5b      	ldr	r3, [r3, #52]	; 0x34
+ 8011d06:	f04f 4280 	mov.w	r2, #1073741824	; 0x40000000
+ 8011d0a:	3b64      	subs	r3, #100	; 0x64
+ 8011d0c:	6353      	str	r3, [r2, #52]	; 0x34
 			HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_1);
- 8011d0c:	2100      	movs	r1, #0
- 8011d0e:	4835      	ldr	r0, [pc, #212]	; (8011de4 <Sample_Function+0x1d4>)
- 8011d10:	f7f7 fe62 	bl	80099d8 <HAL_TIM_PWM_Start>
+ 8011d0e:	2100      	movs	r1, #0
+ 8011d10:	4834      	ldr	r0, [pc, #208]	; (8011de4 <Sample_Function+0x1dc>)
+ 8011d12:	f7f7 fe61 	bl	80099d8 <HAL_TIM_PWM_Start>
 			if(TIM2->CCR1 < 200)
- 8011d14:	f04f 4380 	mov.w	r3, #1073741824	; 0x40000000
- 8011d18:	6b5b      	ldr	r3, [r3, #52]	; 0x34
- 8011d1a:	2bc7      	cmp	r3, #199	; 0xc7
- 8011d1c:	d802      	bhi.n	8011d24 <Sample_Function+0x114>
+ 8011d16:	f04f 4380 	mov.w	r3, #1073741824	; 0x40000000
+ 8011d1a:	6b5b      	ldr	r3, [r3, #52]	; 0x34
+ 8011d1c:	2bc7      	cmp	r3, #199	; 0xc7
+ 8011d1e:	d802      	bhi.n	8011d26 <Sample_Function+0x11e>
 			{
 				done_1 = 1;
- 8011d1e:	4b35      	ldr	r3, [pc, #212]	; (8011df4 <Sample_Function+0x1e4>)
- 8011d20:	2201      	movs	r2, #1
- 8011d22:	701a      	strb	r2, [r3, #0]
+ 8011d20:	4b34      	ldr	r3, [pc, #208]	; (8011df4 <Sample_Function+0x1ec>)
+ 8011d22:	2201      	movs	r2, #1
+ 8011d24:	701a      	strb	r2, [r3, #0]
 			}
 		}
 
 		if(done_1 == 1)
- 8011d24:	4b33      	ldr	r3, [pc, #204]	; (8011df4 <Sample_Function+0x1e4>)
- 8011d26:	781b      	ldrb	r3, [r3, #0]
- 8011d28:	2b01      	cmp	r3, #1
- 8011d2a:	d00c      	beq.n	8011d46 <Sample_Function+0x136>
+ 8011d26:	4b33      	ldr	r3, [pc, #204]	; (8011df4 <Sample_Function+0x1ec>)
+ 8011d28:	781b      	ldrb	r3, [r3, #0]
+ 8011d2a:	2b01      	cmp	r3, #1
+ 8011d2c:	d00c      	beq.n	8011d48 <Sample_Function+0x140>
 	while (adc_value[0] > 2200 || adc_value[0] < 2100)
- 8011d2c:	4b2e      	ldr	r3, [pc, #184]	; (8011de8 <Sample_Function+0x1d8>)
- 8011d2e:	681b      	ldr	r3, [r3, #0]
- 8011d30:	f640 0298 	movw	r2, #2200	; 0x898
- 8011d34:	4293      	cmp	r3, r2
- 8011d36:	d8c1      	bhi.n	8011cbc <Sample_Function+0xac>
- 8011d38:	4b2b      	ldr	r3, [pc, #172]	; (8011de8 <Sample_Function+0x1d8>)
- 8011d3a:	681b      	ldr	r3, [r3, #0]
- 8011d3c:	f640 0233 	movw	r2, #2099	; 0x833
- 8011d40:	4293      	cmp	r3, r2
- 8011d42:	d9bb      	bls.n	8011cbc <Sample_Function+0xac>
- 8011d44:	e000      	b.n	8011d48 <Sample_Function+0x138>
+ 8011d2e:	4b2e      	ldr	r3, [pc, #184]	; (8011de8 <Sample_Function+0x1e0>)
+ 8011d30:	681b      	ldr	r3, [r3, #0]
+ 8011d32:	f640 0298 	movw	r2, #2200	; 0x898
+ 8011d36:	4293      	cmp	r3, r2
+ 8011d38:	d8bc      	bhi.n	8011cb4 <Sample_Function+0xac>
+ 8011d3a:	4b2b      	ldr	r3, [pc, #172]	; (8011de8 <Sample_Function+0x1e0>)
+ 8011d3c:	681b      	ldr	r3, [r3, #0]
+ 8011d3e:	f640 0233 	movw	r2, #2099	; 0x833
+ 8011d42:	4293      	cmp	r3, r2
+ 8011d44:	d9b6      	bls.n	8011cb4 <Sample_Function+0xac>
+ 8011d46:	e000      	b.n	8011d4a <Sample_Function+0x142>
 		{
 			break;
- 8011d46:	bf00      	nop
+ 8011d48:	bf00      	nop
 		}
 	}
 
 	//Voltage calculation
 	val_lineal = 2.99*adc_value[0]/4095;
- 8011d48:	4b27      	ldr	r3, [pc, #156]	; (8011de8 <Sample_Function+0x1d8>)
- 8011d4a:	681b      	ldr	r3, [r3, #0]
- 8011d4c:	4618      	mov	r0, r3
- 8011d4e:	f7ee fbb1 	bl	80004b4 <__aeabi_ui2d>
- 8011d52:	a31b      	add	r3, pc, #108	; (adr r3, 8011dc0 <Sample_Function+0x1b0>)
- 8011d54:	e9d3 2300 	ldrd	r2, r3, [r3]
- 8011d58:	f7ee fc26 	bl	80005a8 <__aeabi_dmul>
- 8011d5c:	4602      	mov	r2, r0
- 8011d5e:	460b      	mov	r3, r1
- 8011d60:	4610      	mov	r0, r2
- 8011d62:	4619      	mov	r1, r3
- 8011d64:	a318      	add	r3, pc, #96	; (adr r3, 8011dc8 <Sample_Function+0x1b8>)
- 8011d66:	e9d3 2300 	ldrd	r2, r3, [r3]
- 8011d6a:	f7ee fd47 	bl	80007fc <__aeabi_ddiv>
- 8011d6e:	4602      	mov	r2, r0
- 8011d70:	460b      	mov	r3, r1
- 8011d72:	4610      	mov	r0, r2
- 8011d74:	4619      	mov	r1, r3
- 8011d76:	f7ee fed9 	bl	8000b2c <__aeabi_d2f>
- 8011d7a:	4603      	mov	r3, r0
- 8011d7c:	4a1e      	ldr	r2, [pc, #120]	; (8011df8 <Sample_Function+0x1e8>)
- 8011d7e:	6013      	str	r3, [r2, #0]
+ 8011d4a:	4b27      	ldr	r3, [pc, #156]	; (8011de8 <Sample_Function+0x1e0>)
+ 8011d4c:	681b      	ldr	r3, [r3, #0]
+ 8011d4e:	4618      	mov	r0, r3
+ 8011d50:	f7ee fbb0 	bl	80004b4 <__aeabi_ui2d>
+ 8011d54:	a31a      	add	r3, pc, #104	; (adr r3, 8011dc0 <Sample_Function+0x1b8>)
+ 8011d56:	e9d3 2300 	ldrd	r2, r3, [r3]
+ 8011d5a:	f7ee fc25 	bl	80005a8 <__aeabi_dmul>
+ 8011d5e:	4602      	mov	r2, r0
+ 8011d60:	460b      	mov	r3, r1
+ 8011d62:	4610      	mov	r0, r2
+ 8011d64:	4619      	mov	r1, r3
+ 8011d66:	a318      	add	r3, pc, #96	; (adr r3, 8011dc8 <Sample_Function+0x1c0>)
+ 8011d68:	e9d3 2300 	ldrd	r2, r3, [r3]
+ 8011d6c:	f7ee fd46 	bl	80007fc <__aeabi_ddiv>
+ 8011d70:	4602      	mov	r2, r0
+ 8011d72:	460b      	mov	r3, r1
+ 8011d74:	4610      	mov	r0, r2
+ 8011d76:	4619      	mov	r1, r3
+ 8011d78:	f7ee fed8 	bl	8000b2c <__aeabi_d2f>
+ 8011d7c:	4603      	mov	r3, r0
+ 8011d7e:	4a1e      	ldr	r2, [pc, #120]	; (8011df8 <Sample_Function+0x1f0>)
+ 8011d80:	6013      	str	r3, [r2, #0]
 
 	//Turn off ADC and PWM
 	HAL_ADC_Stop_DMA(&hadc1);
- 8011d80:	481a      	ldr	r0, [pc, #104]	; (8011dec <Sample_Function+0x1dc>)
- 8011d82:	f7f1 fbc3 	bl	800350c <HAL_ADC_Stop_DMA>
+ 8011d82:	481a      	ldr	r0, [pc, #104]	; (8011dec <Sample_Function+0x1e4>)
+ 8011d84:	f7f1 fbc2 	bl	800350c <HAL_ADC_Stop_DMA>
 	HAL_TIM_PWM_Stop(&htim2, TIM_CHANNEL_1);
- 8011d86:	2100      	movs	r1, #0
- 8011d88:	4816      	ldr	r0, [pc, #88]	; (8011de4 <Sample_Function+0x1d4>)
- 8011d8a:	f7f7 feff 	bl	8009b8c <HAL_TIM_PWM_Stop>
+ 8011d88:	2100      	movs	r1, #0
+ 8011d8a:	4816      	ldr	r0, [pc, #88]	; (8011de4 <Sample_Function+0x1dc>)
+ 8011d8c:	f7f7 fefe 	bl	8009b8c <HAL_TIM_PWM_Stop>
 
 	switch(sample_type)
- 8011d8e:	78fb      	ldrb	r3, [r7, #3]
- 8011d90:	2b01      	cmp	r3, #1
- 8011d92:	d001      	beq.n	8011d98 <Sample_Function+0x188>
- 8011d94:	2b02      	cmp	r3, #2
+ 8011d90:	78fb      	ldrb	r3, [r7, #3]
+ 8011d92:	2b01      	cmp	r3, #1
+ 8011d94:	d001      	beq.n	8011d9a <Sample_Function+0x192>
+ 8011d96:	2b02      	cmp	r3, #2
 		break;
 
 	case 2:
 		//Log formula
 		//TODO: Agregar
 		break;
- 8011d96:	e00e      	b.n	8011db6 <Sample_Function+0x1a6>
+ 8011d98:	e00e      	b.n	8011db8 <Sample_Function+0x1b0>
 		val_lineal = (A * val_lineal) - B; //TODO Corregir
- 8011d98:	ed9f 7a18 	vldr	s14, [pc, #96]	; 8011dfc <Sample_Function+0x1ec>
- 8011d9c:	4b16      	ldr	r3, [pc, #88]	; (8011df8 <Sample_Function+0x1e8>)
- 8011d9e:	edd3 7a00 	vldr	s15, [r3]
- 8011da2:	ee67 7a27 	vmul.f32	s15, s14, s15
- 8011da6:	ed9f 7a16 	vldr	s14, [pc, #88]	; 8011e00 <Sample_Function+0x1f0>
- 8011daa:	ee77 7ac7 	vsub.f32	s15, s15, s14
- 8011dae:	4b12      	ldr	r3, [pc, #72]	; (8011df8 <Sample_Function+0x1e8>)
- 8011db0:	edc3 7a00 	vstr	s15, [r3]
+ 8011d9a:	ed9f 7a18 	vldr	s14, [pc, #96]	; 8011dfc <Sample_Function+0x1f4>
+ 8011d9e:	4b16      	ldr	r3, [pc, #88]	; (8011df8 <Sample_Function+0x1f0>)
+ 8011da0:	edd3 7a00 	vldr	s15, [r3]
+ 8011da4:	ee67 7a27 	vmul.f32	s15, s14, s15
+ 8011da8:	ed9f 7a15 	vldr	s14, [pc, #84]	; 8011e00 <Sample_Function+0x1f8>
+ 8011dac:	ee77 7ac7 	vsub.f32	s15, s15, s14
+ 8011db0:	4b11      	ldr	r3, [pc, #68]	; (8011df8 <Sample_Function+0x1f0>)
+ 8011db2:	edc3 7a00 	vstr	s15, [r3]
 		break;
- 8011db4:	bf00      	nop
+ 8011db6:	bf00      	nop
 	}
 
 	return;
- 8011db6:	bf00      	nop
+ 8011db8:	bf00      	nop
 }
- 8011db8:	3708      	adds	r7, #8
- 8011dba:	46bd      	mov	sp, r7
- 8011dbc:	bd80      	pop	{r7, pc}
- 8011dbe:	bf00      	nop
+ 8011dba:	3708      	adds	r7, #8
+ 8011dbc:	46bd      	mov	sp, r7
+ 8011dbe:	bd80      	pop	{r7, pc}
  8011dc0:	1eb851ec 	.word	0x1eb851ec
  8011dc4:	4007eb85 	.word	0x4007eb85
  8011dc8:	00000000 	.word	0x00000000

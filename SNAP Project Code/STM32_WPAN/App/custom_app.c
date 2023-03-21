@@ -390,16 +390,16 @@ void Amplification_Function(void)
 		MeasureChemical_Function(GPIOA, LED_WP7_EN_Pin);
 	}
 
-	//Nitrogen
+	//Potasium
 	else if (entered_second == 2)
 	{
-		MeasureChemical_Function(GPIOB, LED_4261_EN_Pin);
+		MeasureChemical_Function(GPIOB, LED_4273_EN_Pin);
 	}
 
-	//Potasium
+	//Nitrogen
 	else if (entered_second == 3)
 	{
-		MeasureChemical_Function(GPIOB, LED_4273_EN_Pin);
+		MeasureChemical_Function(GPIOB, LED_4261_EN_Pin);
 	}
 
 	//Return
@@ -487,7 +487,7 @@ void MeasureChemical_Function(GPIO_TypeDef *GPIO_Port, uint16_t GPIO_Pin)
 		selected_main = 0;
 		selected_second = 0;
 		entered_second = 0;
-		menu_counter = 0;
+		//menu_counter = 0;
 
 		//TODO:Mostrar el valor en pantalla y guardar en memoria
 		UTIL_SEQ_SetTask(1 << CFG_TASK_MAIN, CFG_SCH_PRIO_0);
@@ -539,7 +539,7 @@ void ChemicalError_Function(void)
 	SSD1306_Puts("Cambiar LED", &Font_7x10, 1);
 	SSD1306_UpdateScreen();
 
-	HAL_Delay(1000);
+	HAL_Delay(3000);
 	entered_second = 4;
 }
 
@@ -581,6 +581,7 @@ void Sample_Function(char* str, uint8_t sample_type)
 	//Find ideal PWM value
 	while (adc_value[0] > 2200 || adc_value[0] < 2100)
 	{
+		HAL_ADC_Start_DMA(&hadc1, adc_value, 2);
 		if (adc_value[0] <= 2101)
 		{
 			//PWM++
