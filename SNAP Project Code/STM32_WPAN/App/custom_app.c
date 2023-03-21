@@ -32,6 +32,7 @@
 #include "app_ble.h"
 #include "sht31.h"
 #include <stdio.h>
+#include <math.h>
 #include "stm32_seq.h"
 #include "fonts.h"
 #include "ssd1306.h"
@@ -94,19 +95,20 @@ const float A = 3.1725417;
 const float B = 0.73272727;
 float humidity, temperature;
 float batt_percentage = 0.0;
+float voltage_lin = 0.0;
+float voltage_log = 0.0;
 float val_lineal = 0.0;
 float val_log = 0.0;
+float absorbance = 0.0;
 char buf[10];
 
 char *options_menu[2] = {
-		//"Elegir opcion",
 		"Medir quimico",
 		"Medir temperatura y humedad"
 		//"Activar Bluetooth"
 };
 
 char *options_elements[4] = {
-		//"Elegir opcion",
 		"Fosforo",
 		"Potasio",
 		"Nitrogeno",
@@ -127,6 +129,7 @@ void TempHum_Function(void);
 void ADCCheck_Function(void);
 void WaitUser_Function(void);
 void Battery_Percentage(void);
+void ShowValues_Function(void);
 void DisplayMenu_Function(void);
 void ChemicalError_Function(void);
 void Amplification_Function(void);
@@ -273,13 +276,17 @@ void Custom_APP_Init(void)
 	  Battery_Percentage();
 
 	  //Task 1
-	  UTIL_SEQ_RegTask( 1<< CFG_TASK_MAIN, UTIL_SEQ_RFU, task_main);
+	  UTIL_SEQ_RegTask( 1 << CFG_TASK_MAIN, UTIL_SEQ_RFU, task_main);
 
 	  //Task 2
-	  UTIL_SEQ_RegTask( 1<< CFG_TASK_READ_TEMP_HUM, UTIL_SEQ_RFU, TempHum_Function);
+	  UTIL_SEQ_RegTask( 1 << CFG_TASK_READ_TEMP_HUM, UTIL_SEQ_RFU, TempHum_Function);
 
 	  //Task 3
-	  UTIL_SEQ_RegTask( 1<< CFG_TASK_MAIN_2, UTIL_SEQ_RFU, Amplification_Function);
+	  UTIL_SEQ_RegTask( 1 << CFG_TASK_MAIN_2, UTIL_SEQ_RFU, Amplification_Function);
+
+	  //Task 4
+	  UTIL_SEQ_RegTask( 1 << CFG_TASK_SHOW_VALUES, UTIL_SEQ_RFU, ShowValues_Function);
+
 
   /* USER CODE END CUSTOM_APP_Init */
   return;
@@ -490,7 +497,7 @@ void MeasureChemical_Function(GPIO_TypeDef *GPIO_Port, uint16_t GPIO_Pin)
 		//menu_counter = 0;
 
 		//TODO:Mostrar el valor en pantalla y guardar en memoria
-		UTIL_SEQ_SetTask(1 << CFG_TASK_MAIN, CFG_SCH_PRIO_0);
+		UTIL_SEQ_SetTask(1 << CFG_TASK_SHOW_VALUES, CFG_SCH_PRIO_0);
 		return;
 	}
 
@@ -510,6 +517,78 @@ void MeasureChemical_Function(GPIO_TypeDef *GPIO_Port, uint16_t GPIO_Pin)
 	}
 
 	return;
+}
+
+void ShowValues_Function(void){
+	if(HAL_GPIO_ReadPin(BUTT_1_GPIO_Port, BUTT_1_Pin) == GPIO_PIN_RESET)
+	{
+		entered_main = 0;
+		selected_main = 0;
+		UTIL_SEQ_SetTask(1 << CFG_TASK_MAIN, CFG_SCH_PRIO_0);
+		menu_counter = 0;
+		SSD1306_Clear();
+		HAL_Delay(1000);
+
+	}
+
+	else
+	{
+		//Clear screen
+		SSD1306_Clear();
+
+		//Absorbance & lineal information showed on screen
+		SSD1306_GotoXY(1, 0);
+		SSD1306_Puts("Back", &Font_7x10, 0);
+		SSD1306_GotoXY(29,0);
+		SSD1306_Puts("Absorbancia y voltaje", &Font_7x10, 1);
+		SSD1306_GotoXY(35,35);
+		SSD1306_Puts("Lineal y voltaje", &Font_7x10, 1);
+
+		//Lectura del sensor e impresion en la pantalla
+		SSD1306_GotoXY(1, 20);
+		gcvt(absorbance, 3, buf);
+		SSD1306_Puts(buf, &Font_7x10, 1);
+
+		SSD1306_GotoXY(20, 20);
+		gcvt(voltage_log, 3, buf);
+		SSD1306_Puts(buf, &Font_7x10, 1);
+
+		SSD1306_GotoXY(1, 45);
+		gcvt(voltage_log, 3, buf);
+		SSD1306_Puts(buf, &Font_7x10, 1);
+		SSD1306_UpdateScreen();
+
+		//Delay & clear
+		HAL_Delay(2000);
+		SSD1306_Clear();
+
+		//Temp/Hum information showed on screen
+		SSD1306_GotoXY(1, 0);
+		SSD1306_Puts("Back", &Font_7x10, 0);
+		SSD1306_GotoXY(29,0);
+		SSD1306_Puts("Temperatura", &Font_7x10, 1);
+		SSD1306_GotoXY(35,35);
+		SSD1306_Puts("Humedad", &Font_7x10, 1);
+
+		//Lectura del sensor e impresion en la pantalla
+		sht3x_read_temperature_and_humidity(&sht3x_handle, &temperature, &humidity);
+		SSD1306_GotoXY(1, 20);
+		gcvt(temperature, 3, buf);
+		SSD1306_Puts(buf, &Font_7x10, 1);
+		SSD1306_GotoXY(1, 45);
+		gcvt(humidity, 3, buf);
+		SSD1306_Puts(buf, &Font_7x10, 1);
+		SSD1306_UpdateScreen();
+
+		//Guardar informacion en memoria BLE
+		UpdateCharData[1] = (uint8_t) temperature;
+		Custom_STM_App_Update_Char(CUSTOM_STM_TEMP_HUM, &UpdateCharData[1]);
+		UpdateCharData[2] = (uint8_t) humidity;
+		Custom_STM_App_Update_Char(CUSTOM_STM_TEMP_HUM, &UpdateCharData[2]);
+
+		//Repeats Task
+		UTIL_SEQ_SetTask(1 << CFG_TASK_SHOW_VALUES, CFG_SCH_PRIO_0);
+	}
 }
 
 void WaitUser_Function(void)
@@ -574,7 +653,7 @@ void Sample_Function(char* str, uint8_t sample_type)
 	//PWM voltage to 1.5V
 	TIM2->CCR1 = 34492;
 
-	//Start ADC and get ADC value
+	//Start TIM, ADC and get ADC value[0]
 	HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_1);
 	HAL_ADC_Start_DMA(&hadc1, adc_value, 2);
 
@@ -609,9 +688,6 @@ void Sample_Function(char* str, uint8_t sample_type)
 		}
 	}
 
-	//Voltage calculation
-	val_lineal = 2.99*adc_value[0]/4095;
-
 	//Turn off ADC and PWM
 	HAL_ADC_Stop_DMA(&hadc1);
 	HAL_TIM_PWM_Stop(&htim2, TIM_CHANNEL_1);
@@ -619,12 +695,17 @@ void Sample_Function(char* str, uint8_t sample_type)
 	switch(sample_type)
 	{
 	case 1:
+		//Voltage calculation
+		voltage_lin = 2.99*adc_value[0]/4095;
 		//Linear formula
-		val_lineal = (A * val_lineal) - B; //TODO Corregir
+		val_lineal = (A * voltage_lin) - B; //TODO Corregir
 		break;
 
 	case 2:
+		//Voltage calculation
+		voltage_log = 2.99*adc_value[0]/4095;
 		//Log formula
+		absorbance = log(voltage_log / val_lineal);
 		//TODO: Agregar
 		break;
 	}
