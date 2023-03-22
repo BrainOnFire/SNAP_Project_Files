@@ -7,8 +7,8 @@
 ../STM32_WPAN/App/custom_app.c:427:6:TempHum_Function	16	static
 ../STM32_WPAN/App/custom_app.c:471:6:MeasureChemical_Function	16	static
 ../STM32_WPAN/App/custom_app.c:522:6:ShowValues_Function	16	static
-../STM32_WPAN/App/custom_app.c:594:6:WaitUser_Function	8	static
-../STM32_WPAN/App/custom_app.c:611:6:ChemicalError_Function	8	static
-../STM32_WPAN/App/custom_app.c:625:6:Sample_Function	16	static
-../STM32_WPAN/App/custom_app.c:716:6:ADCCheck_Function	8	static
-../STM32_WPAN/App/custom_app.c:729:6:Battery_Percentage	8	static
+../STM32_WPAN/App/custom_app.c:599:6:WaitUser_Function	8	static
+../STM32_WPAN/App/custom_app.c:616:6:ChemicalError_Function	8	static
+../STM32_WPAN/App/custom_app.c:630:6:Sample_Function	16	static
+../STM32_WPAN/App/custom_app.c:721:6:ADCCheck_Function	8	static
+../STM32_WPAN/App/custom_app.c:734:6:Battery_Percentage	8	static

@@ -92,7 +92,7 @@ uint8_t done_2 = 0;
 uint32_t adc_value[2];
 
 const float A = 3.1725417;
-const float B = 0.73272727;
+const float B = 3.663636;
 float humidity, temperature;
 float batt_percentage = 0.0;
 float voltage_lin = 0.0;
@@ -524,10 +524,17 @@ void ShowValues_Function(void){
 	{
 		entered_main = 0;
 		selected_main = 0;
+
+		SSD1306_GotoXY(15, 5);
+		SSD1306_Puts("Valores guardados", &Font_7x10, 1);
+		SSD1306_GotoXY(5, 15);
+		SSD1306_Puts("en memoria", &Font_7x10, 1);
+		SSD1306_UpdateScreen();
+
 		UTIL_SEQ_SetTask(1 << CFG_TASK_MAIN, CFG_SCH_PRIO_0);
 		menu_counter = 0;
 		SSD1306_Clear();
-		HAL_Delay(1000);
+		HAL_Delay(3000);
 
 	}
 
@@ -537,24 +544,23 @@ void ShowValues_Function(void){
 		SSD1306_Clear();
 
 		//Absorbance & lineal information showed on screen
-		SSD1306_GotoXY(1, 0);
+		SSD1306_GotoXY(1, 1);
 		SSD1306_Puts("Back", &Font_7x10, 0);
-		SSD1306_GotoXY(29,0);
+		SSD1306_GotoXY(0,10);
 		SSD1306_Puts("Absorbancia y voltaje", &Font_7x10, 1);
-		SSD1306_GotoXY(35,35);
+		SSD1306_GotoXY(0,20);
 		SSD1306_Puts("Lineal y voltaje", &Font_7x10, 1);
 
-		//Lectura del sensor e impresion en la pantalla
-		SSD1306_GotoXY(1, 20);
+		SSD1306_GotoXY(1, 15);
 		gcvt(absorbance, 3, buf);
 		SSD1306_Puts(buf, &Font_7x10, 1);
 
-		SSD1306_GotoXY(20, 20);
+		SSD1306_GotoXY(1, 25);
 		gcvt(voltage_log, 3, buf);
 		SSD1306_Puts(buf, &Font_7x10, 1);
 
-		SSD1306_GotoXY(1, 45);
-		gcvt(voltage_log, 3, buf);
+		SSD1306_GotoXY(30, 25);
+		gcvt(voltage_lin, 3, buf);
 		SSD1306_Puts(buf, &Font_7x10, 1);
 		SSD1306_UpdateScreen();
 
@@ -563,14 +569,13 @@ void ShowValues_Function(void){
 		SSD1306_Clear();
 
 		//Temp/Hum information showed on screen
-		SSD1306_GotoXY(1, 0);
+		SSD1306_GotoXY(1, 1);
 		SSD1306_Puts("Back", &Font_7x10, 0);
 		SSD1306_GotoXY(29,0);
 		SSD1306_Puts("Temperatura", &Font_7x10, 1);
 		SSD1306_GotoXY(35,35);
 		SSD1306_Puts("Humedad", &Font_7x10, 1);
 
-		//Lectura del sensor e impresion en la pantalla
 		sht3x_read_temperature_and_humidity(&sht3x_handle, &temperature, &humidity);
 		SSD1306_GotoXY(1, 20);
 		gcvt(temperature, 3, buf);
@@ -580,7 +585,7 @@ void ShowValues_Function(void){
 		SSD1306_Puts(buf, &Font_7x10, 1);
 		SSD1306_UpdateScreen();
 
-		//Guardar informacion en memoria BLE
+		//Store information on screen
 		UpdateCharData[1] = (uint8_t) temperature;
 		Custom_STM_App_Update_Char(CUSTOM_STM_TEMP_HUM, &UpdateCharData[1]);
 		UpdateCharData[2] = (uint8_t) humidity;
@@ -706,7 +711,10 @@ void Sample_Function(char* str, uint8_t sample_type)
 		voltage_log = 2.99*adc_value[0]/4095;
 		//Log formula
 		absorbance = log(voltage_log / val_lineal);
-		//TODO: Agregar
+
+		//Store absorbance values in memory
+		UpdateCharData[1] = (uint8_t) absorbance;
+		Custom_STM_App_Update_Char(CUSTOM_STM_ABS, &UpdateCharData[1]);
 		break;
 	}
 
