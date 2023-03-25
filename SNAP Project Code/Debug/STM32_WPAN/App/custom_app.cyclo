@@ -10,5 +10,5 @@ custom_app.c:522:6:ShowValues_Function	2
 custom_app.c:599:6:WaitUser_Function	2
 custom_app.c:616:6:ChemicalError_Function	1
 custom_app.c:630:6:Sample_Function	13
-custom_app.c:721:6:ADCCheck_Function	1
-custom_app.c:734:6:Battery_Percentage	2
+custom_app.c:724:6:ADCCheck_Function	1
+custom_app.c:737:6:Battery_Percentage	2
