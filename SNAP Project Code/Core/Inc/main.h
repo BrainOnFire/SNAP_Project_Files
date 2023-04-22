@@ -62,6 +62,8 @@ void Error_Handler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
+#define Feedback_VREF_Pin GPIO_PIN_0
+#define Feedback_VREF_GPIO_Port GPIOA
 #define BATT_ADC_Pin GPIO_PIN_1
 #define BATT_ADC_GPIO_Port GPIOA
 #define RGB_RED_Pin GPIO_PIN_2
@@ -89,6 +91,8 @@ void Error_Handler(void);
 #define LED_WP7_EN_GPIO_Port GPIOA
 #define PWM_VREF_Pin GPIO_PIN_15
 #define PWM_VREF_GPIO_Port GPIOA
+#define PWM_LEDS_Pin GPIO_PIN_3
+#define PWM_LEDS_GPIO_Port GPIOB
 #define LED_4273_EN_Pin GPIO_PIN_4
 #define LED_4273_EN_GPIO_Port GPIOB
 #define LED_4261_EN_Pin GPIO_PIN_5

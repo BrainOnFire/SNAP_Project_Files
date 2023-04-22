@@ -113,10 +113,11 @@ void HAL_ADC_MspInit(ADC_HandleTypeDef* hadc)
 
     __HAL_RCC_GPIOA_CLK_ENABLE();
     /**ADC1 GPIO Configuration
+    PA0     ------> ADC1_IN5
     PA1     ------> ADC1_IN6
     PA7     ------> ADC1_IN12
     */
-    GPIO_InitStruct.Pin = BATT_ADC_Pin|OPAMP_ADC_Pin;
+    GPIO_InitStruct.Pin = Feedback_VREF_Pin|BATT_ADC_Pin|OPAMP_ADC_Pin;
     GPIO_InitStruct.Mode = GPIO_MODE_ANALOG;
     GPIO_InitStruct.Pull = GPIO_NOPULL;
     HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
@@ -163,10 +164,11 @@ void HAL_ADC_MspDeInit(ADC_HandleTypeDef* hadc)
     __HAL_RCC_ADC_CLK_DISABLE();
 
     /**ADC1 GPIO Configuration
+    PA0     ------> ADC1_IN5
     PA1     ------> ADC1_IN6
     PA7     ------> ADC1_IN12
     */
-    HAL_GPIO_DeInit(GPIOA, BATT_ADC_Pin|OPAMP_ADC_Pin);
+    HAL_GPIO_DeInit(GPIOA, Feedback_VREF_Pin|BATT_ADC_Pin|OPAMP_ADC_Pin);
 
     /* ADC1 DMA DeInit */
     HAL_DMA_DeInit(hadc->DMA_Handle);
@@ -396,8 +398,10 @@ void HAL_TIM_MspPostInit(TIM_HandleTypeDef* htim)
   /* USER CODE END TIM2_MspPostInit 0 */
 
     __HAL_RCC_GPIOA_CLK_ENABLE();
+    __HAL_RCC_GPIOB_CLK_ENABLE();
     /**TIM2 GPIO Configuration
     PA15     ------> TIM2_CH1
+    PB3     ------> TIM2_CH2
     */
     GPIO_InitStruct.Pin = PWM_VREF_Pin;
     GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
@@ -405,6 +409,13 @@ void HAL_TIM_MspPostInit(TIM_HandleTypeDef* htim)
     GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
     GPIO_InitStruct.Alternate = GPIO_AF1_TIM2;
     HAL_GPIO_Init(PWM_VREF_GPIO_Port, &GPIO_InitStruct);
+
+    GPIO_InitStruct.Pin = PWM_LEDS_Pin;
+    GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+    GPIO_InitStruct.Pull = GPIO_NOPULL;
+    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+    GPIO_InitStruct.Alternate = GPIO_AF1_TIM2;
+    HAL_GPIO_Init(PWM_LEDS_GPIO_Port, &GPIO_InitStruct);
 
   /* USER CODE BEGIN TIM2_MspPostInit 1 */
 
