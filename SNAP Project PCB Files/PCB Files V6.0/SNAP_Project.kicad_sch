@@ -5410,10 +5410,10 @@
       (reference "R22") (unit 1) (value "1k") (footprint "Resistor_SMD:R_0805_2012Metric")
     )
     (path "/9ffd6372-1837-40ec-944c-9e839fb461df/624c0373-0075-4944-9d7e-9bbd57b01a2a"
-      (reference "R23") (unit 1) (value "3k3") (footprint "Resistor_SMD:R_0805_2012Metric")
+      (reference "R23") (unit 1) (value "2k2") (footprint "Resistor_SMD:R_0805_2012Metric")
     )
     (path "/9ffd6372-1837-40ec-944c-9e839fb461df/c8aeb946-a576-4015-bda2-d2a0957c3666"
-      (reference "R24") (unit 1) (value "1k5") (footprint "Resistor_SMD:R_0805_2012Metric")
+      (reference "R24") (unit 1) (value "4k7") (footprint "Resistor_SMD:R_0805_2012Metric")
     )
     (path "/9ffd6372-1837-40ec-944c-9e839fb461df/d4afed5f-5706-4459-a5b7-a6cfbb15ba78"
       (reference "R25") (unit 1) (value "10k") (footprint "Resistor_SMD:R_0805_2012Metric")
