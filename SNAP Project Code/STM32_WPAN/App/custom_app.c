@@ -33,6 +33,7 @@
 #include "sht31.h"
 #include <stdio.h>
 #include <math.h>
+#include <stdlib.h>
 #include "stm32_seq.h"
 #include "fonts.h"
 #include "ssd1306.h"
@@ -45,6 +46,8 @@
 typedef struct
 {
   /* SNAP_SVC */
+  /* SNAP_SVC_2 */
+  /* SNAP_SVC_3 */
   /* USER CODE BEGIN CUSTOM_APP_Context_t */
   uint8_t				BT_SW_Status;
   /* USER CODE END CUSTOM_APP_Context_t */
@@ -82,6 +85,8 @@ uint8_t NotifyCharData[247];
 
 /* USER CODE BEGIN PV */
 uint8_t verificador1, amp_counter, chemical_compound, activador_ble, envio_finalizado;
+uint8_t total_measures = 1;
+uint8_t acknowledge = 0;
 uint8_t menu_counter = 0;
 uint8_t selected_main = 0;
 uint8_t selected_second = 0;
@@ -89,30 +94,42 @@ uint8_t entered_second = 0;
 uint8_t entered_main = 0;
 uint8_t done_1 = 0;
 uint8_t done_2 = 0;
+uint8_t id_nut = 0;
 uint32_t adc_value[2];
+
+double array_values[15][6];
+
+int **resultsArray = NULL;
+int numRowsArray = 0;
+const int numColsArray = 10;
 
 const float A = 3.1725417;
 const float B = 3.663636;
-float humidity, temperature;
+float humidity = 85;
+float temperature = 27;
 float batt_percentage = 0.0;
 float voltage_lin = 0.0;
 float voltage_log = 0.0;
 float val_lineal = 0.0;
 float val_log = 0.0;
 float absorbance = 0.0;
-char buf[10];
+float voltage_sensor;
+float current_sensor;
+char  buf[10];
 
-char *options_menu[2] = {
-		"Medir quimico",
-		"Medir temperatura y humedad"
-		//"Activar Bluetooth"
+uint8_t device_ID[12] = {'S', 'N', 'A', 'P', '2', '3', '0', '6', '6', '0', '0', '1'};
+
+char *options_menu[3] = {
+		"Measure nutrient",
+		"Measure temp/hum",
+		"Send data to APP"
 };
 
 char *options_elements[4] = {
-		"Fosforo",
-		"Potasio",
-		"Nitrogeno",
-		"Retornar a menu"
+		"Phosphorus",
+		"Potasium",
+		"Nitrogen",
+		"Return to menu"
 };
 
 sht3x_handle_t sht3x_handle = {
@@ -123,13 +140,19 @@ sht3x_handle_t sht3x_handle = {
 
 /* Private function prototypes -----------------------------------------------*/
 /* SNAP_SVC */
+/* SNAP_SVC_2 */
+/* SNAP_SVC_3 */
 
 /* USER CODE BEGIN PFP */
+void addRow();
+void deleteRow();
+void clearMemory();
 void TempHum_Function(void);
 void ADCCheck_Function(void);
 void WaitUser_Function(void);
 void Battery_Percentage(void);
 void ShowValues_Function(void);
+void SendValues_Function(void);
 void DisplayMenu_Function(void);
 void ChemicalError_Function(void);
 void Amplification_Function(void);
@@ -144,13 +167,11 @@ void task_main(void)
 	//Check if battery was done charging
 	if(battery_completed == 1)
 	{
-
-
 		SSD1306_Clear();
 		SSD1306_GotoXY(15, 5);
-		SSD1306_Puts("Bateria cargada", &Font_7x10, 1);
+		SSD1306_Puts("Battery full", &Font_7x10, 1);
 		SSD1306_GotoXY(5, 15);
-		SSD1306_Puts("Desconectar cable USB", &Font_7x10, 1);
+		SSD1306_Puts("Unplug USB", &Font_7x10, 1);
 		SSD1306_UpdateScreen();
 		HAL_Delay(3000);
 
@@ -177,6 +198,13 @@ void task_main(void)
 		SSD1306_Clear();
 		UTIL_SEQ_SetTask(1 << CFG_TASK_READ_TEMP_HUM, CFG_SCH_PRIO_0);
 	}
+
+	else if(menu_counter == 3)
+	{
+		HAL_Delay(500);
+		SSD1306_Clear();
+		UTIL_SEQ_SetTask(1 << CFG_TASK_SEND_VALUES, CFG_SCH_PRIO_0);
+	}
 }
 /* USER CODE END PFP */
 
@@ -193,28 +221,60 @@ void Custom_STM_App_Notification(Custom_STM_App_Notification_evt_t *pNotificatio
     /* USER CODE END CUSTOM_STM_App_Notification_Custom_Evt_Opcode */
 
     /* SNAP_SVC */
+    case CUSTOM_STM_VOL_SEN_READ_EVT:
+      /* USER CODE BEGIN CUSTOM_STM_VOL_SEN_READ_EVT */
+
+      /* USER CODE END CUSTOM_STM_VOL_SEN_READ_EVT */
+      break;
+
+    case CUSTOM_STM_CU_SEN_READ_EVT:
+      /* USER CODE BEGIN CUSTOM_STM_CU_SEN_READ_EVT */
+
+      /* USER CODE END CUSTOM_STM_CU_SEN_READ_EVT */
+      break;
+
+    case CUSTOM_STM_TEMP_READ_EVT:
+      /* USER CODE BEGIN CUSTOM_STM_TEMP_READ_EVT */
+
+      /* USER CODE END CUSTOM_STM_TEMP_READ_EVT */
+      break;
+
+    case CUSTOM_STM_HUM_READ_EVT:
+      /* USER CODE BEGIN CUSTOM_STM_HUM_READ_EVT */
+
+      /* USER CODE END CUSTOM_STM_HUM_READ_EVT */
+      break;
+
+    /* SNAP_SVC_2 */
+    case CUSTOM_STM_NUM_VAR_READ_EVT:
+      /* USER CODE BEGIN CUSTOM_STM_NUM_VAR_READ_EVT */
+
+      /* USER CODE END CUSTOM_STM_NUM_VAR_READ_EVT */
+      break;
+
     case CUSTOM_STM_ABS_READ_EVT:
       /* USER CODE BEGIN CUSTOM_STM_ABS_READ_EVT */
 
       /* USER CODE END CUSTOM_STM_ABS_READ_EVT */
       break;
 
-    case CUSTOM_STM_REF_VOL_READ_EVT:
-      /* USER CODE BEGIN CUSTOM_STM_REF_VOL_READ_EVT */
+    case CUSTOM_STM_ID_NUT_READ_EVT:
+      /* USER CODE BEGIN CUSTOM_STM_ID_NUT_READ_EVT */
 
-      /* USER CODE END CUSTOM_STM_REF_VOL_READ_EVT */
+      /* USER CODE END CUSTOM_STM_ID_NUT_READ_EVT */
       break;
 
-    case CUSTOM_STM_TEMP_HUM_READ_EVT:
-      /* USER CODE BEGIN CUSTOM_STM_TEMP_HUM_READ_EVT */
+    case CUSTOM_STM_ID_EXTRA_READ_EVT:
+      /* USER CODE BEGIN CUSTOM_STM_ID_EXTRA_READ_EVT */
 
-      /* USER CODE END CUSTOM_STM_TEMP_HUM_READ_EVT */
+      /* USER CODE END CUSTOM_STM_ID_EXTRA_READ_EVT */
       break;
 
-    case CUSTOM_STM_DATE_READ_EVT:
-      /* USER CODE BEGIN CUSTOM_STM_DATE_READ_EVT */
+    /* SNAP_SVC_3 */
+    case CUSTOM_STM_ACK_WRITE_EVT:
+      /* USER CODE BEGIN CUSTOM_STM_ACK_WRITE_EVT */
 
-      /* USER CODE END CUSTOM_STM_DATE_READ_EVT */
+      /* USER CODE END CUSTOM_STM_ACK_WRITE_EVT */
       break;
 
     default:
@@ -269,9 +329,6 @@ void Custom_APP_Notification(Custom_App_ConnHandle_Not_evt_t *pNotification)
 void Custom_APP_Init(void)
 {
   /* USER CODE BEGIN CUSTOM_APP_Init */
-	  //Advertising OFF
-	  //ADV_Stop();
-
 	  //Check if battery has sufficient charge
 	  Battery_Percentage();
 
@@ -285,9 +342,10 @@ void Custom_APP_Init(void)
 	  UTIL_SEQ_RegTask( 1 << CFG_TASK_MAIN_2, UTIL_SEQ_RFU, Amplification_Function);
 
 	  //Task 4
+	  UTIL_SEQ_RegTask( 1 << CFG_TASK_SEND_VALUES, UTIL_SEQ_RFU, SendValues_Function);
+
+	  //Task 5
 	  UTIL_SEQ_RegTask( 1 << CFG_TASK_SHOW_VALUES, UTIL_SEQ_RFU, ShowValues_Function);
-
-
   /* USER CODE END CUSTOM_APP_Init */
   return;
 }
@@ -299,7 +357,7 @@ void DisplayMenu_Function(void)
 	if((HAL_GPIO_ReadPin(BUTT_2_GPIO_Port, BUTT_2_Pin) == GPIO_PIN_RESET))
 	{
 		//SSD1306_Clear();
-		if (selected_main >= 1)
+		if (selected_main >= 2)
 		{
 			SSD1306_Clear();
 			selected_main = 0;
@@ -324,7 +382,7 @@ void DisplayMenu_Function(void)
 		SSD1306_GotoXY(1, 0);
 		SSD1306_Puts("SNAP Menu", &Font_7x10, 1);
 		SSD1306_UpdateScreen();
-		for (uint8_t i = 0; i <= 1; i++)
+		for (uint8_t i = 0; i <= 2; i++)
 		{
 			if (i == selected_main)
 			{
@@ -347,6 +405,12 @@ void DisplayMenu_Function(void)
 	else if (entered_main == 2)
 	{
 		menu_counter = 2;
+	}
+
+	//Ingresa a la funcion de enviar datos a APP
+	else if (entered_main == 3)
+	{
+		menu_counter = 3;
 	}
 }
 
@@ -378,7 +442,7 @@ void Amplification_Function(void)
 	if (entered_second == 0)
 	{
 		SSD1306_GotoXY (1, 0);
-		SSD1306_Puts("Elegir quimico", &Font_7x10, 1);
+		SSD1306_Puts("Choose nutrient", &Font_7x10, 1);
 		SSD1306_UpdateScreen();
 		for (uint8_t i = 0; i <= 3; i++)
 		{
@@ -434,7 +498,6 @@ void TempHum_Function(void)
 		menu_counter = 0;
 		SSD1306_Clear();
 		HAL_Delay(1000);
-
 	}
 
 	else
@@ -443,9 +506,9 @@ void TempHum_Function(void)
 		SSD1306_GotoXY(1, 0);
 		SSD1306_Puts("Back", &Font_7x10, 0);
 		SSD1306_GotoXY(29,0);
-		SSD1306_Puts("Temperatura", &Font_7x10, 1);
+		SSD1306_Puts("Temperature", &Font_7x10, 1);
 		SSD1306_GotoXY(35,35);
-		SSD1306_Puts("Humedad", &Font_7x10, 1);
+		SSD1306_Puts("Humidity", &Font_7x10, 1);
 
 		//Lectura del sensor e impresion en la pantalla
 		sht3x_read_temperature_and_humidity(&sht3x_handle, &temperature, &humidity);
@@ -458,10 +521,10 @@ void TempHum_Function(void)
 		SSD1306_UpdateScreen();
 
 		//Guardar informacion en memoria BLE
-		UpdateCharData[1] = (uint8_t) temperature;
-		Custom_STM_App_Update_Char(CUSTOM_STM_TEMP_HUM, &UpdateCharData[1]);
-		UpdateCharData[2] = (uint8_t) humidity;
-		Custom_STM_App_Update_Char(CUSTOM_STM_TEMP_HUM, &UpdateCharData[2]);
+		//array_values[0][3] = temperature;
+		//Custom_STM_App_Update_Char(CUSTOM_STM_TEMP, &UpdateCharData[1]);
+		//array_values[0][4] = humidity;
+		//Custom_STM_App_Update_Char(CUSTOM_STM_HUM , &UpdateCharData[2]);
 
 		//Repeats Task
 		UTIL_SEQ_SetTask(1 << CFG_TASK_READ_TEMP_HUM, CFG_SCH_PRIO_0);
@@ -470,44 +533,58 @@ void TempHum_Function(void)
 
 void MeasureChemical_Function(GPIO_TypeDef *GPIO_Port, uint16_t GPIO_Pin)
 {
-	//Wait for user input
-	WaitUser_Function();
+	if(total_measures < 15){
+		//Wait for user input
+		WaitUser_Function();
 
-	//Turn on selected LED
-	HAL_GPIO_WritePin(GPIO_Port, GPIO_Pin, GPIO_PIN_SET);
-	HAL_Delay(100);
+		//Turn on selected LED
+		HAL_GPIO_WritePin(GPIO_Port, GPIO_Pin, GPIO_PIN_SET);
+		HAL_Delay(100);
 
-	//Check if selected LED is in correct position
-	ADCCheck_Function();
+		//Check if selected LED is in correct position
+		ADCCheck_Function();
 
-	if(adc_value[0] > 500)
-	{
-		//Funcion que pide al usuario colocar la prueba blanca en la ranura
-		Sample_Function("Blanca", 1);
+		if(adc_value[0] > 500)
+		{
+			//Funcion que pide al usuario colocar la prueba blanca en la ranura
+			Sample_Function("White", 1);
 
-		//Funcion que pide al usuario colocar la prueba real en la ranura
-		Sample_Function("Real", 2);
+			//Funcion que pide al usuario colocar la prueba real en la ranura
+			Sample_Function("Real", 2);
 
-		//Turn off selected LED & reset variables for returning to Menu
-		HAL_GPIO_WritePin(GPIO_Port, GPIO_Pin, GPIO_PIN_RESET);
-		entered_main = 0;
-		selected_main = 0;
-		selected_second = 0;
-		entered_second = 0;
-		//menu_counter = 0;
+			//Turn off selected LED & reset variables for returning to Menu
+			HAL_GPIO_WritePin(GPIO_Port, GPIO_Pin, GPIO_PIN_RESET);
+			entered_main = 0;
+			selected_main = 0;
+			selected_second = 0;
+			entered_second = 0;
 
-		//TODO:Mostrar el valor en pantalla y guardar en memoria
-		UTIL_SEQ_SetTask(1 << CFG_TASK_SHOW_VALUES, CFG_SCH_PRIO_0);
-		return;
+			//TODO:Mostrar el valor en pantalla y guardar en memoria
+			UTIL_SEQ_SetTask(1 << CFG_TASK_SHOW_VALUES, CFG_SCH_PRIO_0);
+			return;
+		}
+
+		else
+		{
+			//Turn off selected LED
+			HAL_GPIO_WritePin(GPIO_Port, GPIO_Pin, GPIO_PIN_RESET);
+
+			//Error al escoger led
+			ChemicalError_Function();
+			entered_main = 0;
+			selected_main = 0;
+			selected_second = 0;
+			entered_second = 0;
+			UTIL_SEQ_SetTask(1 << CFG_TASK_MAIN, CFG_SCH_PRIO_0);
+			return;
+		}
 	}
 
-	else
-	{
-		//Turn off selected LED
-		HAL_GPIO_WritePin(GPIO_Port, GPIO_Pin, GPIO_PIN_RESET);
+	else{
 
-		//Error al escoger led
-		ChemicalError_Function();
+		SSD1306_GotoXY(0,10);
+		SSD1306_Puts("Memory full", &Font_7x10, 1);
+		SSD1306_UpdateScreen();
 		entered_main = 0;
 		selected_main = 0;
 		selected_second = 0;
@@ -515,7 +592,6 @@ void MeasureChemical_Function(GPIO_TypeDef *GPIO_Port, uint16_t GPIO_Pin)
 		UTIL_SEQ_SetTask(1 << CFG_TASK_MAIN, CFG_SCH_PRIO_0);
 		return;
 	}
-
 	return;
 }
 
@@ -526,16 +602,17 @@ void ShowValues_Function(void){
 		selected_main = 0;
 
 		SSD1306_GotoXY(15, 5);
-		SSD1306_Puts("Valores guardados", &Font_7x10, 1);
+		SSD1306_Puts("Data saved", &Font_7x10, 1);
 		SSD1306_GotoXY(5, 15);
-		SSD1306_Puts("en memoria", &Font_7x10, 1);
+		SSD1306_Puts("in memory", &Font_7x10, 1);
 		SSD1306_UpdateScreen();
+		HAL_Delay(3000);
 
 		UTIL_SEQ_SetTask(1 << CFG_TASK_MAIN, CFG_SCH_PRIO_0);
 		menu_counter = 0;
+		total_measures++;
 		SSD1306_Clear();
 		HAL_Delay(3000);
-
 	}
 
 	else
@@ -547,20 +624,20 @@ void ShowValues_Function(void){
 		SSD1306_GotoXY(1, 1);
 		SSD1306_Puts("Back", &Font_7x10, 0);
 		SSD1306_GotoXY(0,10);
-		SSD1306_Puts("Absorbancia y voltaje", &Font_7x10, 1);
+		SSD1306_Puts("Abs & voltage", &Font_7x10, 1);
 		SSD1306_GotoXY(0,20);
-		SSD1306_Puts("Lineal y voltaje", &Font_7x10, 1);
+		SSD1306_Puts("Current", &Font_7x10, 1);
 
 		SSD1306_GotoXY(1, 15);
 		gcvt(absorbance, 3, buf);
 		SSD1306_Puts(buf, &Font_7x10, 1);
 
 		SSD1306_GotoXY(1, 25);
-		gcvt(voltage_log, 3, buf);
+		gcvt(voltage_sensor, 3, buf);
 		SSD1306_Puts(buf, &Font_7x10, 1);
 
 		SSD1306_GotoXY(30, 25);
-		gcvt(voltage_lin, 3, buf);
+		gcvt(current_sensor, 3, buf);
 		SSD1306_Puts(buf, &Font_7x10, 1);
 		SSD1306_UpdateScreen();
 
@@ -572,10 +649,11 @@ void ShowValues_Function(void){
 		SSD1306_GotoXY(1, 1);
 		SSD1306_Puts("Back", &Font_7x10, 0);
 		SSD1306_GotoXY(29,0);
-		SSD1306_Puts("Temperatura", &Font_7x10, 1);
+		SSD1306_Puts("Temperature", &Font_7x10, 1);
 		SSD1306_GotoXY(35,35);
-		SSD1306_Puts("Humedad", &Font_7x10, 1);
+		SSD1306_Puts("Humidity", &Font_7x10, 1);
 
+		//Reads temp/hum
 		sht3x_read_temperature_and_humidity(&sht3x_handle, &temperature, &humidity);
 		SSD1306_GotoXY(1, 20);
 		gcvt(temperature, 3, buf);
@@ -585,14 +663,94 @@ void ShowValues_Function(void){
 		SSD1306_Puts(buf, &Font_7x10, 1);
 		SSD1306_UpdateScreen();
 
-		//Store information on screen
-		UpdateCharData[1] = (uint8_t) temperature;
-		Custom_STM_App_Update_Char(CUSTOM_STM_TEMP_HUM, &UpdateCharData[1]);
-		UpdateCharData[2] = (uint8_t) humidity;
-		Custom_STM_App_Update_Char(CUSTOM_STM_TEMP_HUM, &UpdateCharData[2]);
+		//Store information from temp to flash
+		array_values[total_measures][0] = voltage_sensor;
+		array_values[total_measures][1] = current_sensor;
+		array_values[total_measures][2] = temperature;
+		array_values[total_measures][3] = humidity;
+		array_values[total_measures][4] = absorbance;
+		array_values[total_measures][5] = id_nut;
 
 		//Repeats Task
 		UTIL_SEQ_SetTask(1 << CFG_TASK_SHOW_VALUES, CFG_SCH_PRIO_0);
+	}
+}
+
+void SendValues_Function(void){
+	//Verify if user has measure data
+	if(total_measures > 0){
+		//Verify if all values have been read
+		if(acknowledge == 1){
+
+			//Show on screen
+			SSD1306_Clear();
+			SSD1306_GotoXY(0,30);
+			SSD1306_Puts("Data sent!", &Font_7x10, 1);
+			SSD1306_UpdateScreen();
+			memset(array_values, 0, sizeof array_values);
+
+			HAL_Delay(2000);
+
+			total_measures = 0;
+			menu_counter = 0;
+			entered_main = 0;
+			selected_main = 0;
+			SSD1306_Clear();
+			UTIL_SEQ_SetTask(1 << CFG_TASK_MAIN, CFG_SCH_PRIO_0);
+			return;
+		}
+
+		else{
+			//Mostrar en pantalla que se esta mandando la info
+			SSD1306_GotoXY(0,30);
+			SSD1306_Puts("Sending...", &Font_7x10, 1);
+			SSD1306_UpdateScreen();
+
+			//Pasar por todas las mediciones disponibles
+			//for(uint8_t i = total_measures; i > 0; i--){  //Changed i to 0 in array
+
+				//Pasar info temporal al BT (siete variables)
+				UpdateCharData[0] = (uint8_t) array_values[0][1]*100; 	//voltage_sensor
+				Custom_STM_App_Update_Char(CUSTOM_STM_VOL_SEN, &UpdateCharData[0]);
+				UpdateCharData[1] = (uint8_t) array_values[0][2]*100; 	//current_sensor
+				Custom_STM_App_Update_Char(CUSTOM_STM_CU_SEN, &UpdateCharData[1]);
+				UpdateCharData[2] = (uint8_t) array_values[0][3];		//temp
+				Custom_STM_App_Update_Char(CUSTOM_STM_TEMP, &UpdateCharData[2]);
+				UpdateCharData[3] = (uint8_t) array_values[0][4];		//hum
+				Custom_STM_App_Update_Char(CUSTOM_STM_HUM, &UpdateCharData[3]);
+				UpdateCharData[4] = (uint8_t) array_values[0][5]*100;	//abs
+				Custom_STM_App_Update_Char(CUSTOM_STM_ABS, &UpdateCharData[4]);
+				//UpdateCharData[5] = (uint8_t) device_ID;				//deviceID
+				Custom_STM_App_Update_Char(CUSTOM_STM_ID_EXTRA, device_ID);
+				UpdateCharData[6] = (uint8_t) array_values[0][6];		//id_nut
+				Custom_STM_App_Update_Char(CUSTOM_STM_ID_NUT, &UpdateCharData[6]);
+				UpdateCharData[7] = (uint8_t) total_measures;			//measures remaining
+				Custom_STM_App_Update_Char(CUSTOM_STM_NUM_VAR, &UpdateCharData[7]);
+
+				//total_measures -- esto me permite que la app cambie de valores
+				HAL_Delay(2000);
+			//}
+
+			//Repeats task
+			UTIL_SEQ_SetTask(1 << CFG_TASK_SEND_VALUES, CFG_SCH_PRIO_0);
+			return;
+		}
+	}
+
+	else{
+		//No data stored on memory; return to main menu
+		SSD1306_GotoXY(0,30);
+		SSD1306_Puts("No data on memory", &Font_7x10, 1);
+		SSD1306_UpdateScreen();
+
+		HAL_Delay(2000);
+
+		menu_counter = 0;
+		entered_main = 0;
+		selected_main = 0;
+		SSD1306_Clear();
+		UTIL_SEQ_SetTask(1 << CFG_TASK_MAIN, CFG_SCH_PRIO_0);
+		return;
 	}
 }
 
@@ -602,13 +760,13 @@ void WaitUser_Function(void)
 	HAL_Delay(500);
 	while(HAL_GPIO_ReadPin(GPIOB, BUTT_1_Pin) == GPIO_PIN_SET){
 		SSD1306_GotoXY(15, 5);
-		SSD1306_Puts("Mover palanca", &Font_7x10, 1);
+		SSD1306_Puts("Move lever", &Font_7x10, 1);
 		SSD1306_GotoXY(15, 15);
-		SSD1306_Puts("al LED escogido", &Font_7x10, 1);
+		SSD1306_Puts("to chosen LED", &Font_7x10, 1);
 		SSD1306_GotoXY(15, 25);
-		SSD1306_Puts("Presionar 2", &Font_7x10, 1);
+		SSD1306_Puts("Press 2", &Font_7x10, 1);
 		SSD1306_GotoXY(15, 35);
-		SSD1306_Puts("Para continuar", &Font_7x10, 1);
+		SSD1306_Puts("to continue", &Font_7x10, 1);
 		SSD1306_UpdateScreen();
 	}
 }
@@ -617,10 +775,10 @@ void ChemicalError_Function(void)
 {
 	//Show on screen
 	SSD1306_Clear();
-	SSD1306_GotoXY(15, 15);
-	SSD1306_Puts("LED Incorrecto", &Font_7x10, 1);
-	SSD1306_GotoXY(15, 45);
-	SSD1306_Puts("Cambiar LED", &Font_7x10, 1);
+	SSD1306_GotoXY(25, 15);
+	SSD1306_Puts("Wrong LED", &Font_7x10, 1);
+	SSD1306_GotoXY(10, 45);
+	SSD1306_Puts("Try again please", &Font_7x10, 1);
 	SSD1306_UpdateScreen();
 
 	HAL_Delay(3000);
@@ -635,7 +793,7 @@ void Sample_Function(char* str, uint8_t sample_type)
 	while(HAL_GPIO_ReadPin(GPIOB, BUTT_1_Pin) == GPIO_PIN_SET)
 	{
 		SSD1306_GotoXY(15, 5);
-		SSD1306_Puts("Colocar muestra", &Font_7x10, 1);
+		SSD1306_Puts("Put sample", &Font_7x10, 1);
 		SSD1306_GotoXY(15, 15);
 		switch(sample_type)
 		{
@@ -649,9 +807,9 @@ void Sample_Function(char* str, uint8_t sample_type)
 		}
 		//SSD1306_Puts(str, &Font_7x10, 1);
 		SSD1306_GotoXY(15, 25);
-		SSD1306_Puts("Presionar 2", &Font_7x10, 1);
+		SSD1306_Puts("Press 2", &Font_7x10, 1);
 		SSD1306_GotoXY(15, 35);
-		SSD1306_Puts("Para continuar", &Font_7x10, 1);
+		SSD1306_Puts("to resume", &Font_7x10, 1);
 		SSD1306_UpdateScreen();
 	}
 
@@ -724,14 +882,25 @@ void Sample_Function(char* str, uint8_t sample_type)
 void ADCCheck_Function(void)
 {
 	//Start PWM, PHT & OPAMP
-	TIM2->CCR1 = 65535;
-	HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_1);
-	HAL_Delay(100);
-	HAL_ADC_Start_DMA(&hadc1, adc_value, 2);
+	TIM2->CCR1 = 65535; //Max Value
+	HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_1); //PWM_VREF on
+	//HAL_TIM_PWM_Stop(&htim2, TIM_CHANNEL_1); //PWM_VREF off
+	//TIM2->CCR1 = 0; //Min Value
+
+	//TIM2->CCR2 = 54612; //Max Value
+	TIM2->CCR2 = 65535; //Max Value
+	HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_2); //PWM_LEDS on
+	//HAL_TIM_PWM_Stop(&htim2, TIM_CHANNEL_2); //PWM_LEDS off
+	//TIM2->CCR2 = 0; //Min Value
+
+	HAL_ADC_Start_DMA(&hadc1, adc_value, 2); //Read value
+
+	//Depuracion delay de 100 segundos
+	HAL_Delay(100000);
 
 	//Turn off PWM and ADC
 	HAL_ADC_Stop_DMA(&hadc1);
-	HAL_TIM_PWM_Stop(&htim2, TIM_CHANNEL_1);
+
 }
 
 void Battery_Percentage(void)
@@ -750,9 +919,9 @@ void Battery_Percentage(void)
 		HAL_GPIO_WritePin(GPIOA, RGB_RED_Pin, GPIO_PIN_SET);
 		SSD1306_Clear();
 		SSD1306_GotoXY(15, 15);
-		SSD1306_Puts("Bateria baja", &Font_7x10, 1);
+		SSD1306_Puts("Low battery", &Font_7x10, 1);
 		SSD1306_GotoXY(15, 45);
-		SSD1306_Puts("Conectar cargador", &Font_7x10, 1);
+		SSD1306_Puts("Plug charger", &Font_7x10, 1);
 		SSD1306_UpdateScreen();
 		battery_completed = 1;
 		HAL_Delay(2000);
@@ -761,6 +930,36 @@ void Battery_Percentage(void)
 	return;
 }
 
+void addRow(){
+	numRowsArray++;
+	resultsArray = realloc(resultsArray, numRowsArray * sizeof(int *));
+	resultsArray[numRowsArray - 1] = malloc(numColsArray * sizeof(int));
+}
+
+void deleteRow(int row) {
+	if (row < 0 || row >= numRowsArray){
+		//Mostrar error en pantalla
+		return;
+	}
+
+	free(resultsArray[row]);
+
+	for (int i = row; i < numRowsArray - 1; i++){
+		resultsArray[i] = resultsArray[i + 1];
+	}
+
+	numRowsArray--;
+	resultsArray = realloc(resultsArray, numRowsArray * sizeof(int *));
+}
+
+void clearMemory(){
+	//Free the memory
+	for (int i = 0; i < numRowsArray; i++){
+		free(resultsArray[i]);
+	}
+
+	free(resultsArray);
+}
 /* USER CODE END FD */
 
 /*************************************************************
@@ -770,6 +969,8 @@ void Battery_Percentage(void)
  *************************************************************/
 
 /* SNAP_SVC */
+/* SNAP_SVC_2 */
+/* SNAP_SVC_3 */
 
 /* USER CODE BEGIN FD_LOCAL_FUNCTIONS*/
 

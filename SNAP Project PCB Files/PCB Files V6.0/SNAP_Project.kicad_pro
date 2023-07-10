@@ -439,11 +439,11 @@
   "pcbnew": {
     "last_paths": {
       "gencad": "",
-      "idf": "",
+      "idf": "3D Files/SNAP_Project.emn",
       "netlist": "",
       "specctra_dsn": "",
-      "step": "",
-      "vrml": ""
+      "step": "3D Files/SNAP_Project.step",
+      "vrml": "3D Files/SNAP_Project.wrl"
     },
     "page_layout_descr_file": ""
   },

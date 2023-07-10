@@ -35,22 +35,39 @@ extern "C" {
 typedef enum
 {
   /* SNAP_SVC */
+  CUSTOM_STM_VOL_SEN,
+  CUSTOM_STM_CU_SEN,
+  CUSTOM_STM_TEMP,
+  CUSTOM_STM_HUM,
+  /* SNAP_SVC_2 */
+  CUSTOM_STM_NUM_VAR,
   CUSTOM_STM_ABS,
-  CUSTOM_STM_REF_VOL,
-  CUSTOM_STM_TEMP_HUM,
-  CUSTOM_STM_DATE,
+  CUSTOM_STM_ID_NUT,
+  CUSTOM_STM_ID_EXTRA,
+  /* SNAP_SVC_3 */
+  CUSTOM_STM_ACK,
 } Custom_STM_Char_Opcode_t;
 
 typedef enum
 {
+  /* VOLTAGE_SENSOR */
+  CUSTOM_STM_VOL_SEN_READ_EVT,
+  /* CURRENT_SENSOR */
+  CUSTOM_STM_CU_SEN_READ_EVT,
+  /* TEMP */
+  CUSTOM_STM_TEMP_READ_EVT,
+  /* HUM */
+  CUSTOM_STM_HUM_READ_EVT,
+  /* NUMBER_VAR */
+  CUSTOM_STM_NUM_VAR_READ_EVT,
   /* ABSORBANCE */
   CUSTOM_STM_ABS_READ_EVT,
-  /* REF_VOLTAGE */
-  CUSTOM_STM_REF_VOL_READ_EVT,
-  /* TEMP_HUM */
-  CUSTOM_STM_TEMP_HUM_READ_EVT,
-  /* DATE */
-  CUSTOM_STM_DATE_READ_EVT,
+  /* ID_NUTRIENT */
+  CUSTOM_STM_ID_NUT_READ_EVT,
+  /* ID_DISP_EXTRA */
+  CUSTOM_STM_ID_EXTRA_READ_EVT,
+  /* Acknowledge */
+  CUSTOM_STM_ACK_WRITE_EVT,
 
   CUSTOM_STM_BOOT_REQUEST_EVT
 } Custom_STM_Opcode_evt_t;
@@ -74,10 +91,15 @@ typedef struct
 /* USER CODE END ET */
 
 /* Exported constants --------------------------------------------------------*/
+extern uint8_t SizeVol_Sen;
+extern uint8_t SizeCu_Sen;
+extern uint8_t SizeTemp;
+extern uint8_t SizeHum;
+extern uint8_t SizeNum_Var;
 extern uint8_t SizeAbs;
-extern uint8_t SizeRef_Vol;
-extern uint8_t SizeTemp_Hum;
-extern uint8_t SizeDate;
+extern uint8_t SizeId_Nut;
+extern uint8_t SizeId_Extra;
+extern uint8_t SizeAck;
 
 /* USER CODE BEGIN EC */
 
@@ -85,7 +107,7 @@ extern uint8_t SizeDate;
 
 /* External variables --------------------------------------------------------*/
 /* USER CODE BEGIN EV */
-
+extern uint8_t acknowledge;
 /* USER CODE END EV */
 
 /* Exported macros -----------------------------------------------------------*/

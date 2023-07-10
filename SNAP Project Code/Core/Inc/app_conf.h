@@ -123,8 +123,8 @@
 /**
  * Device name configuration for Generic Access Service
  */
-#define CFG_GAP_DEVICE_NAME             "SNAP"
-#define CFG_GAP_DEVICE_NAME_LENGTH      (4)
+#define CFG_GAP_DEVICE_NAME             "SNAP001"
+#define CFG_GAP_DEVICE_NAME_LENGTH      (7)
 
 /**
  * Define PHY
@@ -672,6 +672,7 @@ typedef enum
   CFG_TASK_MAIN, 			//Added
   CFG_TASK_READ_TEMP_HUM,	//Added
   CFG_TASK_MAIN_2,			//Added
+  CFG_TASK_SEND_VALUES,		//Added
   CFG_TASK_SHOW_VALUES,		//Added
   CFG_TASK_SW_BT_PUSHED_ID,	//Added
   /* USER CODE END CFG_Task_Id_With_HCI_Cmd_t */

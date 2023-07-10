@@ -611,6 +611,11 @@ void Error_Handler(void)
   __disable_irq();
   while (1)
   {
+	  SSD1306_GotoXY(15, 25);
+	  SSD1306_Puts("Error. Please", &Font_7x10, 1);
+	  SSD1306_GotoXY(15, 35);
+	  SSD1306_Puts("reset device", &Font_7x10, 1);
+	  SSD1306_UpdateScreen();
 	  HAL_GPIO_WritePin(GPIOA, RGB_RED_Pin, GPIO_PIN_SET);
 	  HAL_Delay(2000);
 	  HAL_GPIO_WritePin(GPIOA, RGB_RED_Pin, GPIO_PIN_RESET);

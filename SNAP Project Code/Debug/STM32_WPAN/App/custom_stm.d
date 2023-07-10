@@ -111,7 +111,8 @@ STM32_WPAN/App/custom_stm.o: ../STM32_WPAN/App/custom_stm.c \
  ../Middlewares/ST/STM32_WPAN/ble/svc/Inc/uuid.h \
  ../Middlewares/ST/STM32_WPAN/utilities/dbg_trace.h \
  ../STM32_WPAN/App/custom_stm.h ../Core/Inc/main.h ../Core/Inc/app_conf.h \
- ../Core/Inc/app_entry.h ../Core/Inc/app_common.h
+ ../Core/Inc/app_entry.h ../Core/Inc/app_common.h \
+ ../STM32_WPAN/App/custom_app.h
 ../Middlewares/ST/STM32_WPAN/ble/svc/Src/common_blesvc.h:
 ../Middlewares/ST/STM32_WPAN/ble/ble_common.h:
 ../STM32_WPAN/App/ble_conf.h:
@@ -230,3 +231,4 @@ STM32_WPAN/App/custom_stm.o: ../STM32_WPAN/App/custom_stm.c \
 ../Core/Inc/app_conf.h:
 ../Core/Inc/app_entry.h:
 ../Core/Inc/app_common.h:
+../STM32_WPAN/App/custom_app.h:
