@@ -108,6 +108,7 @@ extern uint8_t SizeAck;
 /* External variables --------------------------------------------------------*/
 /* USER CODE BEGIN EV */
 extern uint8_t acknowledge;
+extern uint8_t total_measures;
 /* USER CODE END EV */
 
 /* Exported macros -----------------------------------------------------------*/

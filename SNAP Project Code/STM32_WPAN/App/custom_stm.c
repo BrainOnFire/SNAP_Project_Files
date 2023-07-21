@@ -14,6 +14,18 @@
   * in the root directory of this software component.
   * If no LICENSE file comes with this software, it is provided AS-IS.
   *
+  * This file has the asynchronus data received by Bluetooth. In line 179 there is more
+  * information regarding the SNAP BT communication.
+  *
+  * Please refer to the following files for better understanding of the code:
+  *
+  * 	SNAP_Project_Code -> Core -> Scr -> main.c
+  * 	SNAP_Project_Code -> Core -> Inc -> main.h
+  * 	SNAP_Project_Code -> STM32_WPAN -> App -> custom_app.c
+  * 	SNAP_Project_Code -> STM32_WPAN -> App -> custom_app.h
+  * 	SNAP_Project_Code -> STM32_WPAN -> App -> custom_stm.c  <- Currently in this file
+  * 	SNAP_Project_Code -> STM32_WPAN -> App -> custom_stm.h
+  *
   ******************************************************************************
   */
 /* USER CODE END Header */
@@ -174,10 +186,21 @@ static SVCCTL_EvtAckStatus_t Custom_STM_Event_Handler(void *Event)
           {
             return_value = SVCCTL_EvtAckFlowEnable;
             /* USER CODE BEGIN CUSTOM_STM_Service_3_Char_1_ACI_GATT_ATTRIBUTE_MODIFIED_VSEVT_CODE */
-            HAL_GPIO_TogglePin(RGB_GREEN_GPIO_Port, RGB_GREEN_Pin);
+            /* The following lines represent the moment the APP has send an ackowledge to the device. Once the device has
+             * received the ACK it turns on a green LED and also lowers the amount of measurements remaining to be read by the APP.
+             * At this moment the device can only send one measurement with no problem. However it is possible to send multiple
+             * measurements by testing and debugging. Only this section of the code has been changed for SNAP.
+             * */
+
+            HAL_GPIO_TogglePin(RGB_GREEN_GPIO_Port, RGB_GREEN_Pin);		//Turn on Green LED
             HAL_Delay(500);
-            acknowledge == 1;
-            HAL_GPIO_TogglePin(RGB_GREEN_GPIO_Port, RGB_GREEN_Pin);
+
+            acknowledge = 1; 	//ACK was received, the value of the variable acknowledge changes to 1
+
+            total_measures--; 	//Total value of measures decreases
+
+			Custom_STM_App_Update_Char(CUSTOM_STM_NUM_VAR, &total_measures);	//Save value of remaining measurements to BT memory
+            HAL_GPIO_TogglePin(RGB_GREEN_GPIO_Port, RGB_GREEN_Pin);				//Turn off Green LED
             /* USER CODE END CUSTOM_STM_Service_3_Char_1_ACI_GATT_ATTRIBUTE_MODIFIED_VSEVT_CODE */
           } /* if (attribute_modified->Attr_Handle == (CustomContext.CustomAckHdle + CHARACTERISTIC_VALUE_ATTRIBUTE_OFFSET))*/
           /* USER CODE BEGIN EVT_BLUE_GATT_ATTRIBUTE_MODIFIED_END */

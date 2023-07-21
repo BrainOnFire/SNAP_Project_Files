@@ -2,8 +2,8 @@
 /**
   ******************************************************************************
   * @file    App/custom_app.c
-  * @author  MCD Application Team
-  * @brief   Custom Example Application (Server)
+  * @author  Luciano Zagastizabal Granadino (UTEC)
+  * @brief   SNAP Application (Server)
   ******************************************************************************
   * @attention
   *
@@ -13,6 +13,14 @@
   * This software is licensed under terms that can be found in the LICENSE file
   * in the root directory of this software component.
   * If no LICENSE file comes with this software, it is provided AS-IS.
+  * Please refer to the following files for better understanding of the code:
+  *
+  * 	SNAP_Project_Code -> Core -> Scr -> main.c
+  * 	SNAP_Project_Code -> Core -> Inc -> main.h
+  * 	SNAP_Project_Code -> STM32_WPAN -> App -> custom_app.c  <- Currently in this file
+  * 	SNAP_Project_Code -> STM32_WPAN -> App -> custom_app.h
+  * 	SNAP_Project_Code -> STM32_WPAN -> App -> custom_stm.c
+  * 	SNAP_Project_Code -> STM32_WPAN -> App -> custom_stm.h
   *
   ******************************************************************************
   */
@@ -85,7 +93,7 @@ uint8_t NotifyCharData[247];
 
 /* USER CODE BEGIN PV */
 uint8_t verificador1, amp_counter, chemical_compound, activador_ble, envio_finalizado;
-uint8_t total_measures = 1;
+uint8_t total_measures = 1; //Cambiar a 0 para entrega final; deberia aumentar automaticamente luego de una medicion
 uint8_t acknowledge = 0;
 uint8_t menu_counter = 0;
 uint8_t selected_main = 0;
@@ -98,10 +106,6 @@ uint8_t id_nut = 0;
 uint32_t adc_value[2];
 
 double array_values[15][6];
-
-int **resultsArray = NULL;
-int numRowsArray = 0;
-const int numColsArray = 10;
 
 const float A = 3.1725417;
 const float B = 3.663636;
@@ -117,7 +121,8 @@ float voltage_sensor;
 float current_sensor;
 char  buf[10];
 
-uint8_t device_ID[12] = {'S', 'N', 'A', 'P', '2', '3', '0', '6', '6', '0', '0', '1'};
+//Edit this value when programming different SNAP devices
+uint8_t device_ID[12] = {'S', 'N', 'A', 'P', '2', '3', '0', '6', '6', '0', '0', '3'};
 
 char *options_menu[3] = {
 		"Measure nutrient",
@@ -144,9 +149,6 @@ sht3x_handle_t sht3x_handle = {
 /* SNAP_SVC_3 */
 
 /* USER CODE BEGIN PFP */
-void addRow();
-void deleteRow();
-void clearMemory();
 void TempHum_Function(void);
 void ADCCheck_Function(void);
 void WaitUser_Function(void);
@@ -159,6 +161,10 @@ void Amplification_Function(void);
 void Sample_Function(char* str, uint8_t sample_type);
 void MeasureChemical_Function(GPIO_TypeDef *GPIO_Port, uint16_t GPIO_Pin);
 
+/* By default, this is the first task to run. It shows the three possible choices that can be selected by the user. It also checks
+ * in the background if the battery has charged completely. This first task jumps to the DisplayFunction() to print the SNAP Menu
+ * and repeats the task_main automatically.
+ * */
 void task_main(void)
 {
 	//Initialize temp/hum sensor
@@ -180,18 +186,21 @@ void task_main(void)
 		battery_completed = 0;
 	}
 
+	//Task repeats itself
 	if(menu_counter == 0)
 	{
 		DisplayMenu_Function();
 		UTIL_SEQ_SetTask(1 << CFG_TASK_MAIN, CFG_SCH_PRIO_0);
 	}
 
+	//First choice was selected -> enters the task to select the nutrient
 	else if(menu_counter == 1)
 	{
 		SSD1306_Clear();
 		UTIL_SEQ_SetTask(1 << CFG_TASK_MAIN_2, CFG_SCH_PRIO_0);
 	}
 
+	//Second choice was selected -> enters to the task for reading the temperature and humidity values
 	else if(menu_counter == 2)
 	{
 		HAL_Delay(500);
@@ -199,6 +208,7 @@ void task_main(void)
 		UTIL_SEQ_SetTask(1 << CFG_TASK_READ_TEMP_HUM, CFG_SCH_PRIO_0);
 	}
 
+	//Third choice was selected -> enters to the task to send the values
 	else if(menu_counter == 3)
 	{
 		HAL_Delay(500);
@@ -209,6 +219,8 @@ void task_main(void)
 /* USER CODE END PFP */
 
 /* Functions Definition ------------------------------------------------------*/
+/* We don't use this funtion, please do not edit
+ * */
 void Custom_STM_App_Notification(Custom_STM_App_Notification_evt_t *pNotification)
 {
   /* USER CODE BEGIN CUSTOM_STM_App_Notification_1 */
@@ -289,6 +301,8 @@ void Custom_STM_App_Notification(Custom_STM_App_Notification_evt_t *pNotificatio
   return;
 }
 
+/* We don't use this funtion, please do not edit
+ * */
 void Custom_APP_Notification(Custom_App_ConnHandle_Not_evt_t *pNotification)
 {
   /* USER CODE BEGIN CUSTOM_APP_Notification_1 */
@@ -326,6 +340,10 @@ void Custom_APP_Notification(Custom_App_ConnHandle_Not_evt_t *pNotification)
   return;
 }
 
+/* This functions is the app initialization which checks the current state of the battery first, then creates the following tasks
+ * that run with the use of the scheduler. Every task has a name and a priority. For this case every task has a different name, but
+ * the same priority, so they don't interfiere with eachother. Do not edit this function!
+*/
 void Custom_APP_Init(void)
 {
   /* USER CODE BEGIN CUSTOM_APP_Init */
@@ -351,6 +369,8 @@ void Custom_APP_Init(void)
 }
 
 /* USER CODE BEGIN FD */
+/* Function that gets called by the main menu and runs automatically. It prints in the screen the SNAP Menu.
+ * */
 void DisplayMenu_Function(void)
 {
 	//Se presiona boton 1
@@ -414,6 +434,10 @@ void DisplayMenu_Function(void)
 	}
 }
 
+/* This function gets called when selecting the first choice in the main menu. The following task shows the four possible choices that
+ * can be selected by the user. This choices are the type of nutrient to be selected for the measurement. The fourth choice is the one
+ * that allows the user to return to the main menu.
+ * */
 void Amplification_Function(void)
 {
 	//Se presiona boton 1
@@ -488,8 +512,12 @@ void Amplification_Function(void)
 	return;
 }
 
+/* This functions gets called when selecting the second choice in the SNAP Menu. It enters to the "CFG_TASK_READ_TEMP_HUM" task to
+ * read the temperature and himidity of the environment.
+ * */
 void TempHum_Function(void)
 {
+	//If pressed the enter button, it exits this function and enters to the main menu task
 	if(HAL_GPIO_ReadPin(BUTT_1_GPIO_Port, BUTT_1_Pin) == GPIO_PIN_RESET)
 	{
 		entered_main = 0;
@@ -502,7 +530,7 @@ void TempHum_Function(void)
 
 	else
 	{
-		//Informacion de la pantalla
+		//Prints the information to the scren
 		SSD1306_GotoXY(1, 0);
 		SSD1306_Puts("Back", &Font_7x10, 0);
 		SSD1306_GotoXY(29,0);
@@ -510,7 +538,7 @@ void TempHum_Function(void)
 		SSD1306_GotoXY(35,35);
 		SSD1306_Puts("Humidity", &Font_7x10, 1);
 
-		//Lectura del sensor e impresion en la pantalla
+		//Reading of the temperature and humidity values
 		sht3x_read_temperature_and_humidity(&sht3x_handle, &temperature, &humidity);
 		SSD1306_GotoXY(1, 20);
 		gcvt(temperature, 3, buf);
@@ -520,17 +548,13 @@ void TempHum_Function(void)
 		SSD1306_Puts(buf, &Font_7x10, 1);
 		SSD1306_UpdateScreen();
 
-		//Guardar informacion en memoria BLE
-		//array_values[0][3] = temperature;
-		//Custom_STM_App_Update_Char(CUSTOM_STM_TEMP, &UpdateCharData[1]);
-		//array_values[0][4] = humidity;
-		//Custom_STM_App_Update_Char(CUSTOM_STM_HUM , &UpdateCharData[2]);
-
 		//Repeats Task
 		UTIL_SEQ_SetTask(1 << CFG_TASK_READ_TEMP_HUM, CFG_SCH_PRIO_0);
 	}
 }
 
+/* This function gets called when the user has selected one of the nutrients before starting a measurement.
+ * */
 void MeasureChemical_Function(GPIO_TypeDef *GPIO_Port, uint16_t GPIO_Pin)
 {
 	if(total_measures < 15){
@@ -546,20 +570,20 @@ void MeasureChemical_Function(GPIO_TypeDef *GPIO_Port, uint16_t GPIO_Pin)
 
 		if(adc_value[0] > 500)
 		{
-			//Funcion que pide al usuario colocar la prueba blanca en la ranura
+			//Function that asks the user to insert the blank sample in the slot
 			Sample_Function("White", 1);
 
-			//Funcion que pide al usuario colocar la prueba real en la ranura
+			//Function that asks the user to insert the real sample in the slot
 			Sample_Function("Real", 2);
 
-			//Turn off selected LED & reset variables for returning to Menu
+			//Turn off selected LED & reset menu variables
 			HAL_GPIO_WritePin(GPIO_Port, GPIO_Pin, GPIO_PIN_RESET);
 			entered_main = 0;
 			selected_main = 0;
 			selected_second = 0;
 			entered_second = 0;
 
-			//TODO:Mostrar el valor en pantalla y guardar en memoria
+			//Enters to the task that shows the values measured in the screen and saves them in the system memory
 			UTIL_SEQ_SetTask(1 << CFG_TASK_SHOW_VALUES, CFG_SCH_PRIO_0);
 			return;
 		}
@@ -569,7 +593,7 @@ void MeasureChemical_Function(GPIO_TypeDef *GPIO_Port, uint16_t GPIO_Pin)
 			//Turn off selected LED
 			HAL_GPIO_WritePin(GPIO_Port, GPIO_Pin, GPIO_PIN_RESET);
 
-			//Error al escoger led
+			//Wrongly selected LED
 			ChemicalError_Function();
 			entered_main = 0;
 			selected_main = 0;
@@ -582,6 +606,7 @@ void MeasureChemical_Function(GPIO_TypeDef *GPIO_Port, uint16_t GPIO_Pin)
 
 	else{
 
+		//If the memory is full the function exits this task and returns to the main menu
 		SSD1306_GotoXY(0,10);
 		SSD1306_Puts("Memory full", &Font_7x10, 1);
 		SSD1306_UpdateScreen();
@@ -595,11 +620,10 @@ void MeasureChemical_Function(GPIO_TypeDef *GPIO_Port, uint16_t GPIO_Pin)
 	return;
 }
 
+
 void ShowValues_Function(void){
 	if(HAL_GPIO_ReadPin(BUTT_1_GPIO_Port, BUTT_1_Pin) == GPIO_PIN_RESET)
 	{
-		entered_main = 0;
-		selected_main = 0;
 
 		SSD1306_GotoXY(15, 5);
 		SSD1306_Puts("Data saved", &Font_7x10, 1);
@@ -608,11 +632,13 @@ void ShowValues_Function(void){
 		SSD1306_UpdateScreen();
 		HAL_Delay(3000);
 
-		UTIL_SEQ_SetTask(1 << CFG_TASK_MAIN, CFG_SCH_PRIO_0);
 		menu_counter = 0;
+		entered_main = 0;
+		selected_main = 0;
 		total_measures++;
 		SSD1306_Clear();
-		HAL_Delay(3000);
+
+		UTIL_SEQ_SetTask(1 << CFG_TASK_MAIN, CFG_SCH_PRIO_0);
 	}
 
 	else
@@ -676,13 +702,20 @@ void ShowValues_Function(void){
 	}
 }
 
+/*
+ * Function to send values using BT to APP
+ * First it checks if a measure has been made usign the device. If the device has not made any measurements, it will show on screen
+ * that there is no data saved on memory. Once a measurement is made, the device will start passing the array values too the BT cache.
+ * Once the APP returns a ACK, the screen will show a "data sent" message and the task scheduler will return to the main
+ * menu.
+*/
 void SendValues_Function(void){
 	//Verify if user has measure data
-	if(total_measures > 0){
+	if(total_measures > 0 || acknowledge == 1){
 		//Verify if all values have been read
 		if(acknowledge == 1){
 
-			//Show on screen
+			//Show on screen info has been sent
 			SSD1306_Clear();
 			SSD1306_GotoXY(0,30);
 			SSD1306_Puts("Data sent!", &Font_7x10, 1);
@@ -695,41 +728,38 @@ void SendValues_Function(void){
 			menu_counter = 0;
 			entered_main = 0;
 			selected_main = 0;
+			HAL_Delay(5000);
 			SSD1306_Clear();
 			UTIL_SEQ_SetTask(1 << CFG_TASK_MAIN, CFG_SCH_PRIO_0);
 			return;
 		}
 
 		else{
-			//Mostrar en pantalla que se esta mandando la info
+			//Show on screen BT is being used to send the data
 			SSD1306_GotoXY(0,30);
 			SSD1306_Puts("Sending...", &Font_7x10, 1);
 			SSD1306_UpdateScreen();
 
-			//Pasar por todas las mediciones disponibles
+			//Pasar por todas las mediciones disponibles (sin usar, para futuras pruebas)
 			//for(uint8_t i = total_measures; i > 0; i--){  //Changed i to 0 in array
 
-				//Pasar info temporal al BT (siete variables)
-				UpdateCharData[0] = (uint8_t) array_values[0][1]*100; 	//voltage_sensor
-				Custom_STM_App_Update_Char(CUSTOM_STM_VOL_SEN, &UpdateCharData[0]);
-				UpdateCharData[1] = (uint8_t) array_values[0][2]*100; 	//current_sensor
-				Custom_STM_App_Update_Char(CUSTOM_STM_CU_SEN, &UpdateCharData[1]);
-				UpdateCharData[2] = (uint8_t) array_values[0][3];		//temp
-				Custom_STM_App_Update_Char(CUSTOM_STM_TEMP, &UpdateCharData[2]);
-				UpdateCharData[3] = (uint8_t) array_values[0][4];		//hum
-				Custom_STM_App_Update_Char(CUSTOM_STM_HUM, &UpdateCharData[3]);
-				UpdateCharData[4] = (uint8_t) array_values[0][5]*100;	//abs
-				Custom_STM_App_Update_Char(CUSTOM_STM_ABS, &UpdateCharData[4]);
-				//UpdateCharData[5] = (uint8_t) device_ID;				//deviceID
-				Custom_STM_App_Update_Char(CUSTOM_STM_ID_EXTRA, device_ID);
-				UpdateCharData[6] = (uint8_t) array_values[0][6];		//id_nut
-				Custom_STM_App_Update_Char(CUSTOM_STM_ID_NUT, &UpdateCharData[6]);
-				UpdateCharData[7] = (uint8_t) total_measures;			//measures remaining
-				Custom_STM_App_Update_Char(CUSTOM_STM_NUM_VAR, &UpdateCharData[7]);
-
-				//total_measures -- esto me permite que la app cambie de valores
-				HAL_Delay(2000);
-			//}
+			//Pasar info temporal al BT (siete variables)
+			UpdateCharData[0] = (uint8_t) array_values[0][1]*100; 	//voltage_sensor
+			Custom_STM_App_Update_Char(CUSTOM_STM_VOL_SEN, &UpdateCharData[0]);
+			UpdateCharData[1] = (uint8_t) array_values[0][2]*100; 	//current_sensor
+			Custom_STM_App_Update_Char(CUSTOM_STM_CU_SEN, &UpdateCharData[1]);
+			UpdateCharData[2] = (uint8_t) array_values[0][3];		//temp
+			Custom_STM_App_Update_Char(CUSTOM_STM_TEMP, &UpdateCharData[2]);
+			UpdateCharData[3] = (uint8_t) array_values[0][4];		//hum
+			Custom_STM_App_Update_Char(CUSTOM_STM_HUM, &UpdateCharData[3]);
+			UpdateCharData[4] = (uint8_t) array_values[0][5]*100;	//abs
+			Custom_STM_App_Update_Char(CUSTOM_STM_ABS, &UpdateCharData[4]);
+			//UpdateCharData[5] = (uint8_t) device_ID;				//deviceID
+			Custom_STM_App_Update_Char(CUSTOM_STM_ID_EXTRA, device_ID);
+			UpdateCharData[6] = (uint8_t) array_values[0][6];		//id_nut
+			Custom_STM_App_Update_Char(CUSTOM_STM_ID_NUT, &UpdateCharData[6]);
+			UpdateCharData[7] = (uint8_t) total_measures;			//measures remaining
+			Custom_STM_App_Update_Char(CUSTOM_STM_NUM_VAR, &UpdateCharData[7]);
 
 			//Repeats task
 			UTIL_SEQ_SetTask(1 << CFG_TASK_SEND_VALUES, CFG_SCH_PRIO_0);
@@ -754,6 +784,8 @@ void SendValues_Function(void){
 	}
 }
 
+/* /Function to show on screen to moce the lever to chosen LED
+ * */
 void WaitUser_Function(void)
 {
 	SSD1306_Clear();
@@ -771,6 +803,8 @@ void WaitUser_Function(void)
 	}
 }
 
+/* Function to show on screen that selected LED has wrongfully been selected
+ * */
 void ChemicalError_Function(void)
 {
 	//Show on screen
@@ -785,6 +819,7 @@ void ChemicalError_Function(void)
 	entered_second = 4;
 }
 
+//Funcion para obtener los valores de voltaje y corriente y las absorbacias (falta probar y corregir probablemente toda la funcion)///
 void Sample_Function(char* str, uint8_t sample_type)
 {
 	SSD1306_Clear();
@@ -878,31 +913,39 @@ void Sample_Function(char* str, uint8_t sample_type)
 
 	return;
 }
+//Funcion para obtener los valores de voltaje y corriente y las absorbacias (falta probar y corregir probablemente toda la funcion)///
 
+/*
+ * This function tests if the LEDs are working properly by tunrning ON the PWM of both the PWM_VREF and PWM_LEDs. Then it turns on the
+ * ADC for a brief period an finally turns OFF both PWMs. The value of the ADC is stored in adc_value[0].
+ * */
 void ADCCheck_Function(void)
 {
 	//Start PWM, PHT & OPAMP
 	TIM2->CCR1 = 65535; //Max Value
 	HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_1); //PWM_VREF on
-	//HAL_TIM_PWM_Stop(&htim2, TIM_CHANNEL_1); //PWM_VREF off
-	//TIM2->CCR1 = 0; //Min Value
 
-	//TIM2->CCR2 = 54612; //Max Value
 	TIM2->CCR2 = 65535; //Max Value
-	HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_2); //PWM_LEDS on
-	//HAL_TIM_PWM_Stop(&htim2, TIM_CHANNEL_2); //PWM_LEDS off
-	//TIM2->CCR2 = 0; //Min Value
+	HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_2); //PWM_LEDs on
 
-	HAL_ADC_Start_DMA(&hadc1, adc_value, 2); //Read value
+	HAL_ADC_Start_DMA(&hadc1, adc_value, 2); //Read value to check LED
 
-	//Depuracion delay de 100 segundos
-	HAL_Delay(100000);
+	//100 seconds delay for debugging purposes
+	//HAL_Delay(100000);
 
 	//Turn off PWM and ADC
 	HAL_ADC_Stop_DMA(&hadc1);
 
+	HAL_TIM_PWM_Stop(&htim2, TIM_CHANNEL_1); //PWM_VREF OFF
+	HAL_TIM_PWM_Stop(&htim2, TIM_CHANNEL_2); //PWM_LEDs OFF
 }
 
+/*
+ * This function will test if the battery has sufficient battery remaining for the device to work properly. First, the ADC starts and
+ * checks the value. If this value is greater than 1.64 it means there is enough battery left for the device to work properly. IF this
+ * value is lower than 1.64 the screen will show "Low battery, Plug charger" to indicate to the user that there is no more battery left.
+ * The device will remain on hold until the value changes to be greater than 1.64
+ * */
 void Battery_Percentage(void)
 {
 	//Obtain battery value by ADC
@@ -930,36 +973,6 @@ void Battery_Percentage(void)
 	return;
 }
 
-void addRow(){
-	numRowsArray++;
-	resultsArray = realloc(resultsArray, numRowsArray * sizeof(int *));
-	resultsArray[numRowsArray - 1] = malloc(numColsArray * sizeof(int));
-}
-
-void deleteRow(int row) {
-	if (row < 0 || row >= numRowsArray){
-		//Mostrar error en pantalla
-		return;
-	}
-
-	free(resultsArray[row]);
-
-	for (int i = row; i < numRowsArray - 1; i++){
-		resultsArray[i] = resultsArray[i + 1];
-	}
-
-	numRowsArray--;
-	resultsArray = realloc(resultsArray, numRowsArray * sizeof(int *));
-}
-
-void clearMemory(){
-	//Free the memory
-	for (int i = 0; i < numRowsArray; i++){
-		free(resultsArray[i]);
-	}
-
-	free(resultsArray);
-}
 /* USER CODE END FD */
 
 /*************************************************************
