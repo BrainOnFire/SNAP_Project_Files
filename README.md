@@ -1,7 +1,5 @@
 # S.N.A.P. Version 6.0
 
-*This README is a work in progress*
-
 <img src="SNAP Project PCB Files/PCB Files V6.0/Images/PCB Front 2.jpg" width="300px"></a>
 
 Soil Nutrient Analysis Prototype or S.N.A.P. for short, is an agricultural device that allows farmers to know the best type of nutrient present in a soil sample. The most common types of nutrients found in the ground are Nitrogen, Phosphorus, and Potassium. Photo-sensing sensors can observe these nutrients when an infrared beam hits a sample. Having this information in less than 10 minutes allows the farmer to decide which crop to plant in the selected soil, saving a lot of time and money. The device has come a long way, as this is the sixth iteration of the project. SNAP 6.0 is a BLE, Low-Power, feature-rich sensing device. Here are some specs of the device:
